@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- Our custom CSS -->
+    <link rel="stylesheet" href="style.css"/>
+    
+    <title>Meetup - Profile</title>
+  </head>
+  <body>
+    <header>
+      <nav class="navbar navbar-default navbar-fixed-top navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="index.html">Meetup</a>
+          <div class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+          </div>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav ml-auto">
+              <li class="nav-item ml-auto">
+                <a class="nav-link" href="profile.html">Profile</a>
+              </li>
+              <li class="nav-item ml-auto">
+                <a class="nav-link" href="create_group.html">Create a group</a>
+              </li>
+              <li class="nav-item ml-auto">
+                <a class="nav-link" href="#">Log out</a>
+              </li>
+            </ul>
+          </div>
+        </div>        
+      </nav>
+    </header>
+    <main>
+      <div class="container mt-4 py-4">
+        <div class="row">
+          <!--PROFILE PICTURE-->
+          <div class="col-xs-4 pr-4">
+            <div class="card border-0">
+              <div class="card-head">
+                <a href="#"><img class="rounded-circle" src="pics/img_placeholder.png" alt="img_placeholder"></a>
+              </div>  
+            </div>
+          </div>
+          <!--PERSONAL INFO-->
+          <div class="col-sm-6 pl-4 profile_text">
+            <div class="row py-2">
+              <p class="pr-2"><strong>First Name:</strong></p>
+              <input id="profile_firstName" class="w-50 h-50" type="text" name="profile_firstName">
+            </div>
+            <div class="row py-2">
+              <p class="pr-2"><strong>Last Name:</strong></p>
+              <input id="profile_lastName" class="w-50 h-50" type="text" name="profile_lastName">
+            </div>
+            <div class="row py-2">
+              <p class="pr-2"><strong>E-mail:</strong></p>
+              <input id="profile_email" class="w-50 h-50" type="text" name="profile_email">
+            </div>
+            <div class="row py-2">
+              <p class="pr-2"><strong>Birthday:</strong></p>
+              <input id="profile_bday" class="w-50 h-50" type="text" name="profile_bday">
+            </div>
+            <div class="row py-2">
+              <p class="pr-2"><strong>Hometown:</strong></p>
+              <input id="profile_city" class="w-50 h-50" type="text" name="profile_city">
+            </div>
+          </div>
+        </div>
+      <div class="container mt-4 py-4">
+        <!--BIOGRAPHY-->
+        <div class="row">
+          <p class="py-2 profile_text"><strong>About Me:</strong></p>
+          <textarea id="profile_bio" class="w-100 about_box" type="text" name="profile_bio"></textarea>
+        </div>
+      </div> 
+      <div class="container mt-4 py-4">
+        <div class="row">
+          <p class="pb-4 profile_text"><strong>Groups:</strong></p>
+        </div>
+        <!--GROUPS-->
+        <div class="row">
+          <!--EACH INDIVIDUAL GROUP-->
+          <div class="col-lg-3 py-4">
+            <div class="card">
+              <div class="card-head">
+                <p class="card-text text-center"><strong>Group name</strong></p>
+              </div>
+              <img class="card-img-top" src="pics/group_placeholder.png" alt="group_placeholder">
+              <div class="card-body">
+                <p class="card-text">This will be placeholder text for the description of the group's bio.</p>
+              </div>
+            </div>
+          </div>
+          <!--EACH INDIVIDUAL GROUP-->
+          <div class="col-lg-3 py-4">
+            <div class="card">
+              <div class="card-head">
+                <p class="card-text text-center"><strong>Group name</strong></p>
+              </div>
+              <img class="card-img-top" src="pics/group_placeholder.png" alt="group_placeholder">
+              <div class="card-body">
+                <p class="card-text">This will be placeholder text for the description of the group's bio.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>    
+    </main>
+    <footer>
+
+    </footer>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>
