@@ -4,11 +4,9 @@ link to trello: https://trello.com/b/TfoSSSRy/task-board
 
 
 
-To start:
+To start site:
 
-'''
-cd /src/ReactStart/my-app/
 
-npm start
+'cd /src/ReactStart/my-app/'
 
-'''
+'npm start'
