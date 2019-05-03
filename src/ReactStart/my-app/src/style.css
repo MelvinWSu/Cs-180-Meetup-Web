@@ -1,0 +1,79 @@
+body, html {
+    height: 100%;
+    width: 100%;
+}
+
+.home {
+    opacity: 0.4;
+    background-image: url("homepage.jpg");
+    background-position: center;
+    background-size: cover;
+    height: 100vh;
+}
+
+.landing_text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.signup_card {
+    border-width: 2px;
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.jumbotron {
+    background-color: rgb(180, 65, 65);
+}
+
+.main_search {
+    position: relative;
+    top: -60px;
+    background-color: rgb(235, 231, 231);
+    text-align: center;
+    font-size: 32px;
+    width: 80%;
+    height: 60px;
+}
+
+.search_buttons {
+    position: relative;
+    top: -60px;
+}
+
+.profile_text {
+    font-size: 20px;
+    margin: auto;
+}
+
+.about_box {
+    height: 300px;
+    font-size: 20px;
+}
+
+.card-img-top {
+    max-width: 250px;
+    max-height: 250px;
+    object-fit: cover;
+}
+
+.creategroup_card {
+    border-width: 2px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.group_row {
+    margin: 50px auto;
+}
+
+.group_col {
+    border: 1px dashed lightblue;
+}
