@@ -53,12 +53,12 @@ export default class Login extends Component{
        return (
          <div>
              <Navbar bg="dark" variant="dark">
-            <Navbar.Brand href="login">MeetUp</Navbar.Brand>
+            <Navbar.Brand href="/">MeetUp</Navbar.Brand>
             <Nav className="mr-auto">
             </Nav>
             <Form inline>
-                <Nav.Link color = "primary"   href="#home">Home</Nav.Link>
-                <Nav.Link href="#features">Features</Nav.Link>
+                <Nav.Link color = "primary"   href="/">Home</Nav.Link>
+                <Nav.Link href="/">Features</Nav.Link>
             </Form>
            
 
