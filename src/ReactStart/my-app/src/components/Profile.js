@@ -1,13 +1,69 @@
-import React from 'react';
+import React, {Component} from 'react';
 import './style.css';
 import { Button } from 'react-bootstrap';
 import { Nav, Navbar, NavItem } from 'react-bootstrap';
 import { Image } from 'react-bootstrap';
 import img_placeholder from './pics/img_placeholder.png';
 import group_placeholder from './pics/group_placeholder.png';
+import {BrowserRouter as Router, Route} from 'react-router-dom'
 
-function Profile() {
+export default class Profile extends Component{
+
+  //props allows us to create tags when we call an object
+  //ex:<Welcome name = Sara />;
+  constructor(props){
+    super(props)  
+    
+    /*
+    this.first_name = props.first_name
+    this.last_name = props.last_name 
+    this.bio = props.bio
+    this.picture = props.pic
+    this.uniqueLink = props.link
+    this.email = props.email
+    this.password= props.password
+    */
+
+   this.first_name = "Kevin"
+   this.last_name = "is Awesome"
+   this.bio = "Kevin is Awesome, right?"
+   this.picture = props.pic
+   this.uniqueLink = "tesstlink"
+   this.email = "Kevinisawesome@gmail.com"
+   this.password= props.password
+    //Now when we call a Profile object, we will be able to display the contents correctly
+
+  }
+
+  //a function to generate the uniqueLink
+  getUniqueLink(){
+    return(null);
+  }
+
+  render(){
+
+    return(
+
+      <div>
+        <ProfilePage first_name = {this.first_name} 
+                     last_name = {this.last_name} 
+                     bio = {this.bio}  
+                     pic = {this.picture}
+                     link = {this.uniqueLink}
+                     email ={this.email} />
+      </div>
+
+
+    )
+  }
+
+}
+
+function ProfilePage(props) {
   return (
+    <Router>
+
+    <Route> path = "/".concat(props.first_name)+ </Route>
     <header>
       <Navbar bg="light" expand="ex-lg">
         <Navbar.Brand href="./main">Meetup</Navbar.Brand>
@@ -39,31 +95,24 @@ function Profile() {
             <div class="col-md-4 px-4 profile_text">
               <div class="row py-2">
                 <label class="pr-2"><strong>First Name:</strong></label>
-                <input id="profile_firstName" class="" type="text" name="profile_firstName"/>
+                 {props.first_name}
               </div>
               <div class="row py-2">
                 <label class="pr-2"><strong>Last Name:</strong></label>
-                <input id="profile_lastName" class="" type="text" name="profile_lastName"/>
+                {props.last_name}
               </div>
               <div class="row py-2">
                 <label class="pr-2"><strong>E-mail:</strong></label>
-                <input id="profile_email" class="" type="text" name="profile_email"/>
+                {props.email}
               </div>
-              <div class="row py-2">
-                <label class="pr-2"><strong>Birthday:</strong></label>
-                <input id="profile_bday" class="" type="text" name="profile_bday"/>
-              </div>
-              <div class="row py-2">
-                <label class="pr-2"><strong>Hometown:</strong></label>
-                <input id="profile_city" class="" type="text" name="profile_city"/>
-              </div>
+            
             </div>
           </div>
         </div>
         <div class="container mt-4 py-4">
           <div class="row">
             <p class="py-2 profile_text"><strong>About Me:</strong></p>
-            <textarea id="profile_bio" class="w-100 about_box" type="text" name="profile_bio"></textarea>
+            {props.bio}
           </div>
         </div>
         <div class="row">
@@ -95,7 +144,6 @@ function Profile() {
         </div>    
       </main>
     </header>
+    </Router>
   );
 }
-
-export default Profile;
