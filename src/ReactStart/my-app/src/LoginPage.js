@@ -5,7 +5,7 @@ function simulateNetworkRequest() {
     return new Promise(resolve => setTimeout(resolve, 2000));
   }
 
-export default class Login extends Component{
+export default class LoginPage extends Component{
 
     constructor(props) {
         /* 1. Initialize Ref */
@@ -14,7 +14,7 @@ export default class Login extends Component{
         //profile/firebase variables
         this.email = React.createRef(); 
         this.password = React.createRef();
-
+  
         //button variables
         this.handleClick = this.handleClick.bind(this);
 
@@ -99,5 +99,4 @@ export default class Login extends Component{
          </div>
        )
      }
-
 }
