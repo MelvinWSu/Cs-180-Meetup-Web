@@ -2,6 +2,7 @@ import React from 'react';
 import './style.css';
 import { Button } from 'react-bootstrap';
 import { Nav, Navbar, NavItem } from 'react-bootstrap';
+import fire from '../fire';
 
 function Login() {
   return (

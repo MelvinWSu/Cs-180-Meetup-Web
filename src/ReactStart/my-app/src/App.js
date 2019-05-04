@@ -12,6 +12,7 @@ import Login from './components/Login'
 import Profile from './components/Profile'
 import Signup from './components/Signup'
 import DisplayPage from './DisplayPage'
+
 function App() {
 
   return (
