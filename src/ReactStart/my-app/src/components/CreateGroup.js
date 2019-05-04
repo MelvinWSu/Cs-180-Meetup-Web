@@ -5,6 +5,27 @@ import { Nav, Navbar, NavItem } from 'react-bootstrap';
 import { Image } from 'react-bootstrap';
 import img_placeholder from './pics/img_placeholder.png';
 import group_placeholder from './pics/group_placeholder.png';
+import fire from '../fire';
+
+let group_details = {
+  group_name: '',
+  photo: '',
+  bio: '',
+  member_list: [''],
+  event_list: ['']
+}
+
+function addGroup() {
+  group_details.group_name = document.getElementById("creategroup_name").value;
+  group_details.bio = document.getElementById("creategroup_bio").value;
+  fire.database().ref("groups").push(group_details);
+
+  var group_num = fire.database().ref();
+  group_num.once("value", function(snapshot) {
+      fire.database().ref().update({group_num: snapshot.child("groups").numChildren()});
+    });
+  alert("Group Creation Successful");
+}
 
 function CreateGroup() {
   return (
@@ -32,7 +53,7 @@ function CreateGroup() {
             <div class="col-md-6 mx-auto">
               <div class="card creategroup_card">
                 <div class="card-body mx-3">
-                  <form action="#" method="post">
+                  <form onSubmit={addGroup}>
                     <div class="form-group p-3 text-center">
                       <h4>Create a New Group</h4>
                     </div>

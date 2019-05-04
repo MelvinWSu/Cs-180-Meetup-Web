@@ -30,7 +30,7 @@ function addProfile(event) {
     user_num.once("value", function(snapshot) {
       fire.database().ref().update({user_count: snapshot.child("users").numChildren()});
     });
-    alert("Profile Creation Successful");
+  alert("Profile Creation Successful");
 }
 
 function Signup() {
