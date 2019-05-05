@@ -2,6 +2,36 @@ import React from 'react';
 import './style.css';
 import { Button } from 'react-bootstrap';
 import { Nav, Navbar, NavItem } from 'react-bootstrap';
+import fire from '../fire';
+
+let profile = {
+      f_name: '',
+      l_name: '',
+      email: '',
+      pwd: '',
+      dob: '',
+      city: '',
+      photo: '',
+      headline: '',
+      bio: '',
+      groups: ['']
+}
+
+function addProfile(event) {
+  profile.f_name = document.getElementById("signup_firstName").value;
+  profile.l_name = document.getElementById("signup_lastName").value;
+  profile.email = document.getElementById("signup_email").value;
+  profile.pwd = document.getElementById("signup_password").value;
+  profile.dob = document.getElementById("signup_dateOfBirth").value;
+  profile.city = document.getElementById("signup_city").value;
+  fire.database().ref("users").push(profile);
+
+  var user_num = fire.database().ref();
+    user_num.once("value", function(snapshot) {
+      fire.database().ref().update({user_count: snapshot.child("users").numChildren()});
+    });
+  alert("Profile Creation Successful");
+}
 
 function Signup() {
   return (
@@ -25,7 +55,7 @@ function Signup() {
           <div class="col-md-6 mx-auto">
             <div class="card signup_card">
               <div class="card-body mx-3">
-                <form id="signup_form" action="#" method="post">
+                <form onSubmit={addProfile}>
                   <div class="form-group p-3 text-center">
                     <h4>Register Account</h4>
                   </div>
@@ -48,7 +78,7 @@ function Signup() {
                   <div class="form-group">
                     <div class="row">
                       <div class="col-md-6">
-                        <input id="signup_birth" class="form-control" type="text" placeholder="Date of Birth" name="date_of_birth" required />
+                        <input id="signup_dateOfBirth" class="form-control" type="text" placeholder="Date of Birth" name="date_of_birth" required />
                       </div>
                       <div class="col-md-6">
                         <input id="signup_city" class="form-control" type="text" placeholder="City" name="city" required />
@@ -56,7 +86,7 @@ function Signup() {
                     </div>
                   </div>
                   <div class="form-group pt-3">
-                    <button id="signup_createAccount" class="btn btn-primary btn-block" type="submit" name="signup_button">Create Account</button>
+                    <button id="signup_createAccount" class="btn btn-primary btn-block" type="submit" value="Submit" name="signup_button">Create Account</button>
                   </div>
                 </form>
               </div>

@@ -14,6 +14,7 @@ export default class DisplayPage extends Component {
             <div>
 
             <Nav.Link href="/CreateGroup">CreateGroup</Nav.Link>
+            <Nav.Link href="/CreateEvent">CreateEvent</Nav.Link>
             <Nav.Link href="/Group">Group</Nav.Link>
             <Nav.Link href="/Homepage">Homepage</Nav.Link>
             <Nav.Link href="/Login">Login</Nav.Link>

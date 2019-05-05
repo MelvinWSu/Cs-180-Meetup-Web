@@ -5,17 +5,16 @@ import { Nav, Navbar, NavItem } from 'react-bootstrap';
 import { Image } from 'react-bootstrap';
 import img_placeholder from './pics/img_placeholder.png';
 import group_placeholder from './pics/group_placeholder.png';
-import {BrowserRouter as Router, Route} from 'react-router-dom'
+import {BrowserRouter as Router, Route} from 'react-router-dom';
+import fire from '../fire';
 
 export default class Profile extends Component{
-
+  
   //props allows us to create tags when we call an object
   //ex:<Welcome name = Sara />;
   constructor(props){
     super(props)  
-    
-    /*
-    this.first_name = props.first_name
+    /* this.first_name = props.first_name
     this.last_name = props.last_name 
     this.bio = props.bio
     this.picture = props.pic
@@ -23,27 +22,24 @@ export default class Profile extends Component{
     this.email = props.email
     this.password= props.password
     */
+    this.first_name = "Kevin"
+    this.last_name = "is Awesome"
+    this.bio = "Kevin is Awesome, right?"
+    this.picture = props.pic
+    this.uniqueLink = "tesstlink"
+    this.email = "Kevinisawesome@gmail.com"
+    this.password= props.password
 
-   this.first_name = "Kevin"
-   this.last_name = "is Awesome"
-   this.bio = "Kevin is Awesome, right?"
-   this.picture = props.pic
-   this.uniqueLink = "tesstlink"
-   this.email = "Kevinisawesome@gmail.com"
-   this.password= props.password
     //Now when we call a Profile object, we will be able to display the contents correctly
-
-  }
-
+  } 
   //a function to generate the uniqueLink
   getUniqueLink(){
     return(null);
   }
-
   render(){
-
+    createPage()
     return(
-
+      
       <div>
         <ProfilePage first_name = {this.first_name} 
                      last_name = {this.last_name} 
@@ -52,17 +48,26 @@ export default class Profile extends Component{
                      link = {this.uniqueLink}
                      email ={this.email} />
       </div>
-
-
     )
   }
 
 }
 
+function createPage() {
+  //url will probably look like Profile/users/<unique key>
+  //ex. http://localhost:3000/Profile/users/-Le-SeIoVd9PzvzwuDi_
+  alert(window.location.pathname.split('/Profile/')[1])
+  var usersRef = fire.database().ref(window.location.pathname.split('/Profile/')[1]);
+    usersRef.once("value").then(function(snapshot) {
+    alert(snapshot.val().f_name);
+    Profile.first_name = snapshot.val().f_name;
+    });
+}
+
+
 function ProfilePage(props) {
   return (
     <Router>
-
     <Route> path = "/".concat(props.first_name)+ </Route>
     <header>
       <Navbar bg="light" expand="ex-lg">

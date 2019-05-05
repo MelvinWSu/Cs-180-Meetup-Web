@@ -2,6 +2,27 @@ import React from 'react';
 import './style.css';
 import { Button } from 'react-bootstrap';
 import { Nav, Navbar, NavItem } from 'react-bootstrap';
+import fire from '../fire';
+
+function checkLogin() {
+  var usersRef = fire.database().ref('users').orderByKey();
+    usersRef.once("value").then(function(snapshot) {
+      snapshot.forEach(function(childSnapshot) {
+        var key = childSnapshot.key;
+        console.log("Key: " +key);
+        var childData = childSnapshot.val();
+        console.log("Data: " + childData);
+        console.log("Email: " + childData.email);
+        console.log("Pwd: " + childData.pwd);
+        if (document.getElementById("login_email").value == childData.email) {
+          if (document.getElementById("login_password").value == childData.pwd) {
+            alert("Access avail");
+          }
+        }
+      });
+    });
+  
+}
 
 function Login() {
   return (
@@ -26,7 +47,7 @@ function Login() {
           <div class="col-md-6 mx-auto">
             <div class="card signup_card my-4">
               <div class="card-body mx-3">
-                <form id="login_form" action="#" method="post">
+                <form onSubmit={checkLogin}>
                   <div class="form-group p-3 text-center">
                     <h4>Log in</h4>
                   </div>

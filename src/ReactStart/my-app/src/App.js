@@ -5,6 +5,7 @@ import LoginPage from './LoginPage'
 import {BrowserRouter as Router, Route} from 'react-router-dom'
 
 import CreateGroup from './components/CreateGroup'
+import CreateEvent from './components/CreateEvent'
 import Group from './components/Group'
 import Homepage from './components/Homepage'
 import Mainpage from './components/Mainpage'
@@ -12,15 +13,15 @@ import Login from './components/Login'
 import Profile from './components/Profile'
 import Signup from './components/Signup'
 import DisplayPage from './DisplayPage'
+
 function App() {
 
   return (
     <Router>
-    <div className="App">
-      
-
-      <Route exact path = "/" component = {DisplayPage} />
-      <Route path = "/CreateGroup" component = {CreateGroup} />
+      <div className="App">
+        <Route exact path = "/" component = {DisplayPage} />
+        <Route path = "/CreateGroup" component = {CreateGroup} />
+        <Route path = "/CreateEvent" component = {CreateEvent} />
         <Route path = "/Group" component = {Group} />
         <Route path = "/Homepage" component = {Homepage} />
         <Route path = "/Login" component = {Login} />
@@ -28,8 +29,7 @@ function App() {
         <Route path = "/Profile" component = {Profile} />
         <Route path = "/Signup" component = {Signup} />
         <Route path = "/LoginPage" component = {LoginPage} />
- 
-    </div>
+      </div>
     </Router>
 
   );
