@@ -110,38 +110,38 @@ function ProfilePage(props) {
           </div>
         </div>
         <div class="container mt-4 py-4">
-          <div class="row">
-            <p class="py-2 profile_text"><strong>About Me:</strong></p>
-            {props.bio}
-          </div>
+          <p class="py-2 profile_text"><strong>About Me:</strong></p>
+          {props.bio}
         </div>
         <div class="row">
           <p class="pb-4 profile_text"><strong>Groups:</strong></p>
         </div>
-        <div class="row">
-          <div class="col-lg-3 py-4">
-            <div class="card">
-              <div class="card-head">
-                <p class="card-text text-center"><strong>Group name</strong></p>
-              </div>
-              <img class="card-img-top" src={group_placeholder} alt="group_placeholder"/>
+        <div class="container">
+          <div class="row">
+            <div class="col-md-4 py-4">
+              <div class="card profile_groups">
+                <div class="card-head">
+                  <p class="card-text text-center"><strong>Group name</strong></p>
+                </div>
+                <img class="card-img-top" src={group_placeholder} alt="group_placeholder"/>
                 <div class="card-body">
                   <p class="card-text">This will be placeholder text for the description of the group's bio.</p>
                 </div>
-            </div>
-          </div>
-          <div class="col-lg-3 py-4">
-            <div class="card">
-              <div class="card-head">
-                <p class="card-text text-center"><strong>Group name</strong></p>
-              </div>
-              <img class="card-img-top" src={group_placeholder} alt="group_placeholder"/>
-              <div class="card-body">
-                <p class="card-text">This will be placeholder text for the description of the group's bio.</p>
               </div>
             </div>
-          </div>
-        </div>    
+            <div class="col-md-4 py-4">
+              <div class="card profile_groups">
+                <div class="card-head">
+                  <p class="card-text text-center"><strong>Group name</strong></p>
+                </div>
+                <img class="card-img-top" src={group_placeholder} alt="group_placeholder"/>
+                <div class="card-body">
+                  <p class="card-text">This will be placeholder text for the description of the group's bio.</p>
+                </div>
+              </div>
+            </div>
+          </div>   
+        </div> 
       </main>
     </header>
     </Router>
