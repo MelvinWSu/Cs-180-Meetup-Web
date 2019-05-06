@@ -55,7 +55,7 @@ function CreateEvent() {
             <div class="col-md-6 mx-auto">
               <div class="card createevent_card">
                 <div class="card-body mx-3">
-                  <form onSubmit={addEvent}>
+                  <form>
                     <div class="form-group p-3 text-center">
                       <h4>Create a New Event</h4>
                     </div>
@@ -78,9 +78,7 @@ function CreateEvent() {
                       <a class="pr-4">Details</a>
                       <textarea id="createevent_desc" rows="5" class="form-control" type="text" name="eventdetails" required></textarea>
                     </div>
-                    <div class="py-4">
-                      <button id="createEvent" class="btn btn-primary btn-block" type="submit" name="createEvent_button">Create Event</button>
-                    </div>
+                    <Button onClick = {addEvent}> Create Event </Button>
                   </form>
                 </div>
               </div>

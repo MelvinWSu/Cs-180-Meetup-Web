@@ -15,7 +15,7 @@ let group_details = {
   event_list: ['']
 }
 
-function addGroup() {
+function addGroup() {   
   group_details.group_name = document.getElementById("creategroup_name").value;
   group_details.bio = document.getElementById("creategroup_bio").value;
   fire.database().ref("groups").push(group_details);
@@ -48,29 +48,27 @@ function CreateGroup() {
         </Navbar.Collapse>
       </Navbar>
       <main>
-        <div class="container h-100">
-          <div class="row align-items-center h-100">
-            <div class="col-md-6 mx-auto">
-              <div class="card creategroup_card">
-                <div class="card-body mx-3">
+        <div className="container h-100">
+          <div className="row align-items-center h-100">
+            <div className="col-md-6 mx-auto">
+              <div className="card creategroup_card">
+                <div className="card-body mx-3">
                   <form onSubmit={addGroup}>
-                    <div class="form-group p-3 text-center">
+                    <div className="form-group p-3 text-center">
                       <h4>Create a New Group</h4>
                     </div>
-                    <div class="form-group text-center">
+                    <div className="form-group text-center">
                       <a href="#"><img src={img_placeholder} /></a>
                     </div>
-                    <div class="form-group">
+                    <div className="form-group">
                       <a>Group Name</a>
-                      <input id="creategroup_name" class="form-control" type="text" name="groupname" required />
+                      <input id="creategroup_name" className="form-control" type="text" name="groupname" required />
                     </div>
-                    <div class="form-group">
-                      <a class="pr-4">Bio</a>
-                      <textarea id="creategroup_bio" rows="5" class="form-control" type="text" name="groupbio" required></textarea>
+                    <div className="form-group">
+                      <a className="pr-4">Bio</a>
+                      <textarea id="creategroup_bio" rows="5" className="form-control" type="text" name="groupbio" required></textarea>
                     </div>
-                    <div class="py-4">
-                      <button id="createGroup" class="btn btn-primary btn-block" type="submit" name="creategroup_button">Create Group</button>
-                    </div>
+                    <Button onClick = {addGroup}>Create Group</Button>
                   </form>
                 </div>
               </div>
