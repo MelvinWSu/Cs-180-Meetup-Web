@@ -52,7 +52,7 @@ function Signup() {
 return (
   <header>
     <Navbar bg="light" expand="md">
-      <Navbar.Brand href="./">Meetup</Navbar.Brand>
+      <Navbar.Brand href="./main">Meetup</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="navbarCollapse">
         <Nav className="ml-auto">
@@ -100,7 +100,7 @@ return (
                     </div>
                   </div>
                 </div>
-                <Button onClick={addProfile}>
+                <Button onClick={addProfile} href = '/Profile'>
                 CreateAccount
                 </Button>
             </div>

@@ -68,7 +68,6 @@ function createPage() {
 function ProfilePage(props) {
   return (
     <Router>
-    <Route> path = "/".concat(props.first_name)+ </Route>
     <header>
       <Navbar bg="light" expand="ex-lg">
         <Navbar.Brand href="./main">Meetup</Navbar.Brand>

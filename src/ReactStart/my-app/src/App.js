@@ -19,13 +19,12 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <Route exact path = "/" component = {DisplayPage} />
+        <Route exact path = "/Homepage" component = {Homepage} />
         <Route path = "/CreateGroup" component = {CreateGroup} />
         <Route path = "/CreateEvent" component = {CreateEvent} />
         <Route path = "/Group" component = {Group} />
-        <Route path = "/Homepage" component = {Homepage} />
         <Route path = "/Login" component = {Login} />
-        <Route path = "/Mainpage" component = {Mainpage} />
+        <Route path = "/main" component = {Mainpage} />
         <Route path = "/Profile" component = {Profile} />
         <Route path = "/Signup" component = {Signup} />
         <Route path = "/LoginPage" component = {LoginPage} />

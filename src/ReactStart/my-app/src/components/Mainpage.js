@@ -16,7 +16,7 @@ function Mainpage() {
               <Nav.Link href="./profile">Profile</Nav.Link>
             </NavItem>
             <NavItem className="ml-auto">
-              <Nav.Link className="ml-auto" href="./create_group">Create Group</Nav.Link>
+              <Nav.Link className="ml-auto" href="./CreateGroup">Create Group</Nav.Link>
             </NavItem>
             <NavItem className="ml-auto">
               <Nav.Link className="ml-auto" href="#">Logout</Nav.Link>
