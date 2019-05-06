@@ -5,6 +5,8 @@ import { Nav, Navbar, NavItem } from 'react-bootstrap';
 import fire from '../fire';
 
 function checkLogin() {
+
+  console.log("checking...")
   var usersRef = fire.database().ref('users').orderByKey();
     usersRef.once("value").then(function(snapshot) {
       snapshot.forEach(function(childSnapshot) {
@@ -42,25 +44,21 @@ function Login() {
         </Navbar.Collapse>
       </Navbar>
       <main>
-      <div class="container h-100">
-        <div class="row align-items-center h-100">
-          <div class="col-md-6 mx-auto">
-            <div class="card signup_card my-4">
-              <div class="card-body mx-3">
-                <form onSubmit={checkLogin}>
-                  <div class="form-group p-3 text-center">
+      <div className="container h-100">
+        <div className="row align-items-center h-100">
+          <div className="col-md-6 mx-auto">
+            <div className="card signup_card my-4">
+              <div className="card-body mx-3">
+                  <div className="form-group p-3 text-center">
                     <h4>Log in</h4>
                   </div>
-                  <div class="form-group">
-                    <input id="login_email" class="form-control" type="text" placeholder="E-mail" name="e_mail" required/>
+                  <div className="form-group">
+                    <input id="login_email" className="form-control" type="text" placeholder="E-mail" name="e_mail" required/>
                   </div>
-                  <div class="form-group">
-                    <input id="login_password" class="form-control" type="password" placeholder="Password" name="password" required/>
+                  <div className="form-group">
+                    <input id="login_password" className="form-control" type="password" placeholder="Password" name="password" required/>
                   </div>
-                  <div class="form-group pt-3">
-                    <button id="login_loginAccount" class="btn btn-primary btn-block" type="submit" name="login_button">Log In</button>
-                  </div>
-                </form>
+                  <Button onClick = {checkLogin}>Login</Button>
               </div>
             </div>
           </div>
