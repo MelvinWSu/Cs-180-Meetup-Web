@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import { Nav, Navbar, NavItem } from 'react-bootstrap';
 
-
 export default class DisplayPage extends Component {
 
     constructor(){
@@ -22,6 +21,7 @@ export default class DisplayPage extends Component {
             <Nav.Link href="/Profile">Profile</Nav.Link>
             <Nav.Link href="/Signup">Signup</Nav.Link>
             <Nav.Link href="/LoginPage">LoginPage</Nav.Link>
+            <Nav.Link href="/Account">Account</Nav.Link>
     
             </div>
         )

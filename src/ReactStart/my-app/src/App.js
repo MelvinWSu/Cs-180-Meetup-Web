@@ -13,9 +13,9 @@ import Login from './components/Login'
 import Profile from './components/Profile'
 import Signup from './components/Signup'
 import DisplayPage from './DisplayPage'
+import Account from './components/Account'
 
 function App() {
-
   return (
     <Router>
       <div className="App">
@@ -28,6 +28,7 @@ function App() {
         <Route path = "/Profile" component = {Profile} />
         <Route path = "/Signup" component = {Signup} />
         <Route path = "/LoginPage" component = {LoginPage} />
+        <Route path = "/Account" component = {Account} />
       </div>
     </Router>
 

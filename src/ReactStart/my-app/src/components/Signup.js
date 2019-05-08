@@ -19,32 +19,46 @@ let profile = {
       groups: ['']
 }
 
+const accountCreation = async(email, pwd) => {
+  var isError = false;
+  await fire.auth().createUserWithEmailAndPassword(profile.email, profile.pwd).catch(function(error) {
+    alert(error.message);
+    isError = true;
+  });
+  if (!isError) {
+    alert("Account Made");
+    profile.f_name = document.getElementById("signup_firstName").value;
+    profile.l_name = document.getElementById("signup_lastName").value;
+    profile.dob = document.getElementById("signup_dateOfBirth").value;
+    profile.city = document.getElementById("signup_city").value;
+    fire.database().ref("users").push().set(profile);
 
-
-function addProfile(event) {
-  //Add to database
-  console.log("entering...")
-  profile.f_name = document.getElementById("signup_firstName").value;
-  profile.l_name = document.getElementById("signup_lastName").value;
-  profile.email = document.getElementById("signup_email").value;
-  profile.pwd = document.getElementById("signup_password").value;
-  profile.dob = document.getElementById("signup_dateOfBirth").value;
-  profile.city = document.getElementById("signup_city").value;
-  fire.database().ref("users").push().set(profile);
-
-  //updating the user branch with the given profile information
-  var user_num = fire.database().ref();
+    var user_num = fire.database().ref();
     user_num.once("value", function(snapshot) {
       fire.database().ref().update({user_count: snapshot.child("users").numChildren()});
-    }); 
-    
-  console.log(user_num)
-  alert(user_num );
+    });
+  }
+}
 
-  console.log("creating...")
+function Signup_control(event) {
+  //Add to database
+  event.preventDefault();
+  event.stopPropagation();
+  profile.email = document.getElementById("signup_email").value;
+  profile.pwd = document.getElementById("signup_password").value;
+  //reminder to remove password for firebase
+  
+  //updating the user branch with the given profile information
+  var isError = accountCreation(profile.email, profile.pwd);
   
   //at this point the database has added the signup information
   //how do I render a new route?
+  var getUID = fire.database().ref("users");
+  getUID.orderByChild('email').equalTo(profile.email).on("value", function(snapshot) {
+    snapshot.forEach(function(child) { 
+      window.location.href = 'profile/user/' + child.key;
+    })
+  });
 }
 
 
@@ -100,7 +114,7 @@ return (
                     </div>
                   </div>
                 </div>
-                <Button onClick={addProfile} href = '/Profile'>
+                <Button onClick={Signup_control}>
                 CreateAccount
                 </Button>
             </div>

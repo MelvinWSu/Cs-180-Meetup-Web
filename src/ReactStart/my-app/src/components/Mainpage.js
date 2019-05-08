@@ -1,8 +1,18 @@
-import React from 'react';
+import React, {component} from 'react';
 import './style.css';
+import fire from '../fire';
 import { Button } from 'react-bootstrap';
 import { Nav, Navbar, NavItem } from 'react-bootstrap';
 import { Dropdown, DropdownButton} from 'react-bootstrap';
+
+function Logout(e) {
+  e.preventDefault();
+  fire.auth().signOut().then(function() {
+    window.location.href = "/Account";
+  }, function(error) {
+    alert(error);
+  });
+}
 
 function Mainpage() {  
   return (
@@ -13,7 +23,7 @@ function Mainpage() {
         <Navbar.Collapse>
           <Nav className="ml-auto">
             <NavItem className="ml-auto">
-              <Nav.Link href="./profile">Profile</Nav.Link>
+              <Nav.Link href="./account">Account</Nav.Link>
             </NavItem>
             <NavItem className="ml-auto">
               <Nav.Link className="ml-auto" href="./CreateGroup">Create Group</Nav.Link>

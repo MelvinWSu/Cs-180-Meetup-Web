@@ -4,31 +4,32 @@ import { Button } from 'react-bootstrap';
 import { Nav, Navbar, NavItem } from 'react-bootstrap';
 import fire from '../fire';
 
-function checkLogin() {
-
-  console.log("checking...")
-  var usersRef = fire.database().ref('users').orderByKey();
-    usersRef.once("value").then(function(snapshot) {
-      snapshot.forEach(function(childSnapshot) {
-        var key = childSnapshot.key;
-        console.log("Key: " +key);
-        var childData = childSnapshot.val();
-        console.log("Data: " + childData);
-        console.log("Email: " + childData.email);
-        console.log("Pwd: " + childData.pwd);
-        if (document.getElementById("login_email").value == childData.email) {
-          if (document.getElementById("login_password").value == childData.pwd) {
-            alert("Access avail");
-          }
-          else {
-            alert("Access denied");
-          }
-        }
-      });
+const check_login = async(email, pwd) => {
+  var isError = false;
+  fire.auth().signInWithEmailAndPassword(email, pwd).catch(function(error) {
+    alert(error.message);
+    isError = true;
+  });
+  if (!isError) {
+    var getUID = fire.database().ref("users");
+    getUID.orderByChild('email').equalTo(email).on("value", function(snapshot) {
+      snapshot.forEach(function(child) { 
+        window.location.href = 'profile/user/' + child.key;
+      })
     });
-  
+  }
+  else {
+    alert("Wait, you are already logged");
+  }
 }
 
+function Login_control() {
+  var email = document.getElementById("login_email").value;
+  var pwd = document.getElementById("login_password").value;
+  check_login(email,pwd);
+}
+
+//really want toSubmit back, i'm used to hitting enter to log in to things
 function Login() {
   return (
     <header>
@@ -61,7 +62,7 @@ function Login() {
                   <div className="form-group">
                     <input id="login_password" className="form-control" type="password" placeholder="Password" name="password" required/>
                   </div>
-                  <Button onClick = {checkLogin}>Login</Button>
+                  <Button onClick = {Login_control}>Login</Button>
               </div>
             </div>
           </div>
