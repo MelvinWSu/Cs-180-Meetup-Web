@@ -22,6 +22,7 @@ export default class DisplayPage extends Component {
             <Nav.Link href="/Signup">Signup</Nav.Link>
             <Nav.Link href="/LoginPage">LoginPage</Nav.Link>
             <Nav.Link href="/Account">Account</Nav.Link>
+            <Nav.Link href="/EditProfile">Account</Nav.Link>
     
             </div>
         )

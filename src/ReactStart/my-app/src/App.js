@@ -14,6 +14,7 @@ import Profile from './components/Profile'
 import Signup from './components/Signup'
 import DisplayPage from './DisplayPage'
 import Account from './components/Account'
+import EditProfile from './components/EditProfile'
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path = "/Signup" component = {Signup} />
         <Route path = "/LoginPage" component = {LoginPage} />
         <Route path = "/Account" component = {Account} />
+        <Route path = "/EditProfile" component = {EditProfile} />
       </div>
     </Router>
 

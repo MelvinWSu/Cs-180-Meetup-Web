@@ -15,7 +15,7 @@ class Profile extends Component{
       first_name: "loading...",
       last_name: "loading...",
       bio: "loading...",
-      picture: props.pic,
+      picture: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG/220px-Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG",
       uniqueLink: "loading...",
       email: "https://www.tacobell.com/",
      }
@@ -39,6 +39,7 @@ class Profile extends Component{
           email: snapshot.val().email,
         })  
       });
+      document.getElementById('profile_img').style.borderRadius = '50%';
     }, 100)
   }
   
@@ -73,7 +74,11 @@ class Profile extends Component{
               <div class="col-md-4 px-4">
                 <div class="card border-0">
                   <div class="card-head">
-                    <a href="#"><img class="rounded-circle" src={img_placeholder} alt="img_placeholder"/></a>
+                    <img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG/220px-Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG" height = "300" width = "300" id="profile_img"/>    
+                    <div id="filesubmit" action = {uploadImage()}>
+                      <input type="file" class="file-select" accept="image/*"/>
+                      <button class="file-submit">SUBMIT</button>
+                    </div>
                   </div>  
                 </div>
               </div>
@@ -133,5 +138,8 @@ class Profile extends Component{
     )
   }
 }
+
+function uploadImage() {
+};
 
 export default Profile
