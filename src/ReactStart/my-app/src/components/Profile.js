@@ -6,18 +6,21 @@ import { Image } from 'react-bootstrap';
 import img_placeholder from './pics/img_placeholder.png';
 import group_placeholder from './pics/group_placeholder.png';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
-import fire from '../fire';
+import fire, {auth} from '../fire';
+import Logout from './Logout';
 
 class Profile extends Component{
   constructor(props){
     super(props);
     this.state = {
+      currentUser : null,
       first_name: "loading...",
       last_name: "loading...",
       bio: "loading...",
       picture: props.pic,
       uniqueLink: "loading...",
       email: "https://www.tacobell.com/",
+      viewing: false
      }
   }
   
@@ -44,6 +47,18 @@ class Profile extends Component{
   
   componentDidMount() {
     this.getData();
+    console.log("Current User:")
+    
+    auth.onAuthStateChanged(function (user) {
+      // handle it
+      console.log("onauthstatechanged")
+      console.log(user)
+      this.state = {
+        currentUser: user,
+      }
+    });
+
+  
   }
 
   render(){
@@ -55,14 +70,12 @@ class Profile extends Component{
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse>
             <Nav className="ml-auto">
-              <NavItem className="ml-auto">
-                <Nav.Link href="./profile">Profile</Nav.Link>
-              </NavItem>
+
               <NavItem className="ml-auto">
                 <Nav.Link className="ml-auto" href="./create_group">Create Group</Nav.Link>
               </NavItem>
               <NavItem className="ml-auto">
-                <Nav.Link className="ml-auto" href="#">Logout</Nav.Link>
+                <Nav.Link className="ml-auto" onClick = {Logout}>Logout</Nav.Link>
               </NavItem>
             </Nav>
           </Navbar.Collapse>

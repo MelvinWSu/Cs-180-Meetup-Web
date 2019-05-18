@@ -1,10 +1,20 @@
-import React from 'react';
+import React, {Component} from 'react';
 import './style.css';
 import { Button } from 'react-bootstrap';
 import { Nav, Navbar, NavItem } from 'react-bootstrap';
 
-function Homepage() {
-  return (
+class Homepage extends Component {
+
+  constructor(){
+    super()
+
+  }
+
+  componentDidMount(){
+  
+  }
+  render(){
+    return (
     <header>
       <Navbar bg="light" expand="md">
         <Navbar.Brand href="./main">Meetup</Navbar.Brand>
@@ -33,6 +43,7 @@ function Homepage() {
       </main>
     </header>
   );
+  }
 }
 
 export default Homepage;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import './App.css';
 import { Button, Card, Form, Navbar, Nav, FormControl, Row, Col, Container} from 'react-bootstrap';
 import LoginPage from './LoginPage'
@@ -14,25 +14,40 @@ import Profile from './components/Profile'
 import Signup from './components/Signup'
 import DisplayPage from './DisplayPage'
 import Account from './components/Account'
+import fire from './fire.js'
 
-function App() {
-  return (
-    <Router>
-      <div className="App">
-        <Route exact path = "/" component = {Homepage} />
-        <Route path = "/CreateGroup" component = {CreateGroup} />
-        <Route path = "/CreateEvent" component = {CreateEvent} />
-        <Route path = "/Group" component = {Group} />
-        <Route path = "/Login" component = {Login} />
-        <Route path = "/main" component = {Mainpage} />
-        <Route path = "/Profile" component = {Profile} />
-        <Route path = "/Signup" component = {Signup} />
-        <Route path = "/LoginPage" component = {LoginPage} />
-        <Route path = "/Account" component = {Account} />
-      </div>
-    </Router>
+class App extends Component{
 
-  );
+  constructor(){
+    super()
+    var getUID = fire.database().ref("users");
+      var email = ""
+        getUID.orderByChild('email').equalTo(email).on("value", function(snapshot) {
+          snapshot.forEach(function(child) { 
+            window.location.href = 'profile/user/' + child.key;
+          })
+        });
+      
+  }
+  render(){
+    return (
+      <Router>
+        <div className="App">
+          <Route exact path = "/" component = {Homepage} />
+          <Route path = "/CreateGroup" component = {CreateGroup} />
+          <Route path = "/CreateEvent" component = {CreateEvent} />
+          <Route path = "/Group" component = {Group} />
+          <Route path = "/Login" component = {Login} />
+          <Route path = "/main" component = {Mainpage} />
+          <Route path = "/profile/user/:key" component = {Profile} />
+          <Route path = "/Signup" component = {Signup} />
+          <Route path = "/LoginPage" component = {LoginPage} />
+          <Route path = "/Account" component = {Account} />
+        </div>
+      </Router>
+
+    );
+  }
 
 }
 
