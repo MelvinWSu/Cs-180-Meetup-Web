@@ -5,11 +5,33 @@ import { Button } from 'react-bootstrap';
 import { Nav, Navbar, NavItem } from 'react-bootstrap';
 import { Dropdown, DropdownButton} from 'react-bootstrap';
 import Logout from './Logout';
+import forwardToProfile from './forwardToProfile'
 class Mainpage extends Component { 
   constructor(){
     super()
+    this.state = {
+      currentUser: false,
+      loggedOn : false,
+      currentemail: false
+    }
     
+  
   } 
+
+  handleProfileButtonClick() {
+    
+    if (auth.currentUser){
+      
+      //get key of current user
+      //forward to that profile
+      forwardToProfile(auth.currentUser.email);
+    }
+    else{
+      alert("Not Logged On")
+      window.location.href = "/"
+    }
+ }
+
 
   componentDidMount(){
 
@@ -19,20 +41,10 @@ class Mainpage extends Component {
 
 
         this.setState({ currentUser:user,loggedOn : true});
-
-        var ref = fire.database().ref().child("users").equalTo(user["email"])
-        ref.on('value', function(snapshot){
-          snapshot.forEach(function(childSnapshot){
-            var childData  = childSnapshot.val()
-            console.log(childData)
-          })
-        })
         
-        console.log("states: ")
-        console.log(this.state)
+       
 
-        console.log("user info")
-        console.log(ref)
+       
         
       }
       else{
@@ -40,6 +52,9 @@ class Mainpage extends Component {
         console.log("no one logged on")
       }
     });
+
+    console.log("states: ")
+    console.log(this.state)
 
   }
   render(){
@@ -54,7 +69,7 @@ class Mainpage extends Component {
                 <Nav.Link href="./account">Account</Nav.Link>
               </NavItem>
               <NavItem className="ml-auto">
-                  <Nav.Link href="./profile">Profile</Nav.Link>
+                  <Nav.Link onClick = {this.handleProfileButtonClick}>Profile</Nav.Link>
                 </NavItem>
               <NavItem className="ml-auto">
                 <Nav.Link className="ml-auto" href="./CreateGroup" >Create Group</Nav.Link>
