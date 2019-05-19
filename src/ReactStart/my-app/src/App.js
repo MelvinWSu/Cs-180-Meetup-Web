@@ -16,6 +16,7 @@ import DisplayPage from './DisplayPage'
 import Account from './components/Account'
 import EditProfile from './components/EditProfile'
 import fire from './fire.js'
+import dynamicfieldpractice from './components/dynamicfield-practice'
 
 class App extends Component{
 
@@ -45,7 +46,7 @@ class App extends Component{
           <Route path = "/LoginPage" component = {LoginPage} />
           <Route path = "/Account" component = {Account} />
           <Route path = "/EditProfile" component = {EditProfile} />
-
+          <Route path = "/dyn" component = {dynamicfieldpractice} />
         </div>
       </Router>
 
