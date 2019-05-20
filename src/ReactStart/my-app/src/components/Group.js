@@ -7,8 +7,6 @@ import img_placeholder from './pics/img_placeholder.png';
 import group_placeholder from './pics/group_placeholder.png';
 import fire from '../fire';
 
-export var groupKey;
-
 class Group extends Component{
   constructor(props){
     super(props);
@@ -17,8 +15,6 @@ class Group extends Component{
       group_bio: "loading...",
      }
   }
-
- groupKey = this.props.match.params.key;
 
   getData() {
     setTimeout(() => {
@@ -34,7 +30,7 @@ class Group extends Component{
   }
 
   goToCreateEvent(event) {    
-    window.location.href = "/createevent/" + window.location.pathname.split('/group/')[1];
+    window.location.href = "/createEvent/" + window.location.pathname.split('/group/')[1];
     event.preventDefault();
   }
 

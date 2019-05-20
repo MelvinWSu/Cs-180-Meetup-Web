@@ -20,7 +20,7 @@ function addEvent() {
   event_details.time = document.getElementById("createevent_time").value;
   event_details.loc = document.getElementById("createevent_loc").value;
   event_details.desc = document.getElementById("createevent_desc").value;
-  var groupKey = window.location.pathname.split('/createevent/')[1]
+  var groupKey = window.location.pathname.split('/createEvent/')[1]
   fire.database().ref("groups/" + groupKey + "/event_list").push().set(event_details);
 
   var event_num = fire.database().ref();
