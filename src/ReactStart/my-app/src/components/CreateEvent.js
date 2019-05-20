@@ -6,6 +6,7 @@ import { Image } from 'react-bootstrap';
 import img_placeholder from './pics/img_placeholder.png';
 import group_placeholder from './pics/group_placeholder.png';
 import fire from '../fire';
+import { groupKey } from './Group.js';
 
 let event_details = {
   event_name: '',
@@ -20,7 +21,9 @@ function addEvent() {
   event_details.time = document.getElementById("createevent_time").value;
   event_details.loc = document.getElementById("createevent_loc").value;
   event_details.desc = document.getElementById("createevent_desc").value;
-  fire.database().ref("events").push(event_details);
+  //fire.database().ref("events").push(event_details);
+  //var groupKey = fire.database().ref("groups/-LeAfChB-c2AJMC5huX_").key; 
+  fire.database().ref("groups/" + groupKey + "/event_list").push().set(event_details);
 
   var event_num = fire.database().ref();
   event_num.once("value", function(snapshot) {

@@ -22,7 +22,7 @@ function App() {
         <Route exact path = "/" component = {Homepage} />
         <Route path = "/CreateGroup" component = {CreateGroup} />
         <Route path = "/CreateEvent" component = {CreateEvent} />
-        <Route path = "/Group" component = {Group} />
+        <Route path = "/Group/:key" component = {Group} />
         <Route path = "/Login" component = {Login} />
         <Route path = "/main" component = {Mainpage} />
         <Route path = "/Profile" component = {Profile} />

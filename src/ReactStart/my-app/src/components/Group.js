@@ -7,15 +7,18 @@ import img_placeholder from './pics/img_placeholder.png';
 import group_placeholder from './pics/group_placeholder.png';
 import fire from '../fire';
 
+export var groupKey;
+
 class Group extends Component{
   constructor(props){
     super(props);
     this.state = {
       group_name: "loading...",
       group_bio: "loading...",
-      
      }
   }
+
+ groupKey = this.props.match.params.key;
 
   getData() {
     setTimeout(() => {
@@ -25,7 +28,6 @@ class Group extends Component{
         self.setState({
           group_name: snapshot.val().group_name,
           group_bio: snapshot.val().bio,
-          
         })
       });
     }, 100)
@@ -72,7 +74,7 @@ class Group extends Component{
               <div class="col-xs-4">
                 <div class="row">
                   <h3 class="py-4">Events</h3>
-                  <button id="create_event" class="btn btn-primary ml-auto my-auto" type="button" name="create_event">Create Event</button>
+                  <a class="btn btn-primary ml-auto my-auto" href="../CreateEvent">Create Event</a>
                 </div>
                 <div class="card group_card">
                   <div class="card-body">
