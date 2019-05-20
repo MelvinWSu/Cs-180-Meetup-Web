@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import './style.css';
 import { Button } from 'react-bootstrap';
 import { Nav, Navbar, NavItem } from 'react-bootstrap';
@@ -12,7 +12,12 @@ class Group extends React.Component {
     super(props);
     var self = ''
     var key = this.props.match.params.key;
-    this.state = { values: [] };
+    this.state = {
+      group_name: "loading...",
+      group_bio: "loading...",
+      values: [],
+      joined : false
+     }
     this.joined = false;
   }
 
@@ -32,7 +37,8 @@ class Group extends React.Component {
           })
         })
         fire.database().ref("users/" + userkey + "/groups").update([window.location.pathname.split('/group/')[1]]);
-        fire.database().ref("groups/" + window.location.pathname.split('/group/')[1] + "/member_list").update([userkey])
+        
+        fire.database().ref("groups/" + window.location.pathname.split('/group/')[1] + "/member_list").push([userkey])
         console.log("1");
         }
       });
@@ -41,6 +47,23 @@ class Group extends React.Component {
       alert("Already in Group");  
       console.log("0");
     }
+  }
+  
+  getData() {
+    setTimeout(() => {
+      var self = this;
+      var usersRef = fire.database().ref("groups/" + window.location.pathname.split('/group/')[1]);
+      usersRef.once("value").then(function (snapshot) {
+        self.setState({
+          group_name: snapshot.val().group_name,
+          group_bio: snapshot.val().bio,
+        })
+      });
+    }, 100)
+  }
+
+  goToCreateEvent(event) {    
+    window.location.href = "/createEvent/" + window.location.pathname.split('/group/')[1];
     event.preventDefault();
   }
 
@@ -49,7 +72,11 @@ class Group extends React.Component {
     auth.onAuthStateChanged(function (user) {
       this.state = {
         currentUser: user,
+        
       }
+
+
+      console.log(user)
       var ref = fire.database().ref("users");
       ref.orderByChild("email").equalTo(user.email).on("value", function(snapshot){
         snapshot.forEach(function(data) {
@@ -72,13 +99,14 @@ class Group extends React.Component {
         });
       })
     });  
+    this.getData();
   }
 
   render() {
     return (
       <header>
         <Navbar bg="light" expand="ex-lg">
-          <Navbar.Brand href="./main">Meetup</Navbar.Brand>
+          <Navbar.Brand href="/main">Meetup</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse>
             <Nav className="ml-auto">
@@ -102,8 +130,8 @@ class Group extends React.Component {
                 <input id="join_group" class="btn btn-info" type="button" value= "  Join Group  " onClick={this.buttonClicked.bind(this)}></input>
               </div>
               <div class="col-xs-4">
-                <h3>Group Name goes here plus some more text</h3>
-                <p>Bio goes here plus some more text</p>
+                <h3>{this.state.group_name}</h3>
+                <p>{this.state.group_bio}</p>
               </div>
             </div>
             <div>
@@ -112,7 +140,10 @@ class Group extends React.Component {
           <div class="container">
             <div class="row group_row">
               <div class="col-xs-4">
-                <h3 class="py-4">Events</h3>
+                <div class="row">
+                  <h3 class="py-4">Events</h3>
+                  <a class="btn btn-primary ml-auto my-auto" onClick = {this.goToCreateEvent.bind(this)}>Create Event</a>
+                </div>
                 <div class="card group_card">
                   <div class="card-body">
                     <h5 class="card-title">Event Title</h5>
@@ -170,7 +201,6 @@ class Group extends React.Component {
             </div>
             </div>
           </div> 
-          
         </main>
       </header>
     );

@@ -131,7 +131,7 @@ class Profile extends Component{
       l_name: the_last_name,
       bio: the_bio});
     
-
+    
     var self = this
     self.setState({
       first_name: the_first_name,
