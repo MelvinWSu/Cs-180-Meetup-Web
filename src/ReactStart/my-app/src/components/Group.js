@@ -33,6 +33,11 @@ class Group extends Component{
     }, 100)
   }
 
+  goToCreateEvent(event) {    
+    window.location.href = "/createevent/" + window.location.pathname.split('/group/')[1];
+    event.preventDefault();
+  }
+
   componentDidMount() {
     this.getData();
   }
@@ -49,7 +54,7 @@ class Group extends Component{
                 <Nav.Link href="./profile">Profile</Nav.Link>
               </NavItem>
               <NavItem className="ml-auto">
-                <Nav.Link className="ml-auto" href="./create_group">Create Group</Nav.Link>
+                <Nav.Link className="ml-auto" href="/create_group">Create Group</Nav.Link>
               </NavItem>
               <NavItem className="ml-auto">
                 <Nav.Link className="ml-auto" href="#">Logout</Nav.Link>
@@ -74,7 +79,7 @@ class Group extends Component{
               <div class="col-xs-4">
                 <div class="row">
                   <h3 class="py-4">Events</h3>
-                  <a class="btn btn-primary ml-auto my-auto" href="../CreateEvent">Create Event</a>
+                  <a class="btn btn-primary ml-auto my-auto" onClick = {this.goToCreateEvent.bind(this)}>Create Event</a>
                 </div>
                 <div class="card group_card">
                   <div class="card-body">
