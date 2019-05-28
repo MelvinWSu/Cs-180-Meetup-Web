@@ -19,7 +19,7 @@ let profile = {
       photo: '',
       headline: '',
       bio: '',
-      groups: [null]
+      groups: ["0"]
 }
 
 

@@ -62,7 +62,7 @@ export default class  GroupCard extends Component{
               
                 
                 
-                <Card.Text className="justify-content-center" style={{width: '200px','max-height': '180px', 'overflow-y': 'transparent'}}>
+                <Card.Text className="justify-content-center" style={{width: '200px'}}>
                 <br/>
                 {this.state.groupBio}
                 
