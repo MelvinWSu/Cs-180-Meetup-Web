@@ -2,12 +2,13 @@ import React, {Component} from 'react';
 import './style.css';
 import { Button } from 'react-bootstrap';
 import { Nav, Navbar, NavItem } from 'react-bootstrap';
-import { Image } from 'react-bootstrap';
+import { Carousel, Row, Col } from 'react-bootstrap';
 import img_placeholder from './pics/img_placeholder.png';
 import group_placeholder from './pics/group_placeholder.png';
 import fire, {auth} from '../fire';
+import EventCard from './EventCard';
 
-class Group extends React.Component {
+class Group extends Component {
   constructor(props) {
     super(props);
     var self = ''
@@ -16,7 +17,8 @@ class Group extends React.Component {
       group_name: "loading...",
       group_bio: "loading...",
       values: [],
-      joined : false
+      joined : false,
+      eventList: [],
      }
     this.joined = false;
   }
@@ -57,6 +59,7 @@ class Group extends React.Component {
         self.setState({
           group_name: snapshot.val().group_name,
           group_bio: snapshot.val().bio,
+          eventList: snapshot.val().event_list
         })
       });
     }, 100)
@@ -144,22 +147,10 @@ class Group extends React.Component {
                   <h3 class="py-4">Events</h3>
                   <a class="btn btn-primary ml-auto my-auto" onClick = {this.goToCreateEvent.bind(this)}>Create Event</a>
                 </div>
-                <div class="card group_card">
-                  <div class="card-body">
-                    <h5 class="card-title">Event Title</h5>
-                    <div class="card-text">
-                      <p>Event Details </p>
-                    </div>
-                    <div class="card-bottom">
-                      <img src="#" alt="profile_img"/>
-                      <form>
-                        <div class="text-right">
-                          <button id="join_event" class="btn btn-info" type="button" name="join_event">Join Event</button>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </div>
+                {/* SPLIT EVENT_LIST ARRAY INTO SEPARATE ITEMS */}
+                {this.state.eventList.slice(1, this.state.eventList.length).map((item, key) =>
+                  <EventCard item={item} key={item.key} />
+                )}
               </div>
               <div class="col-xs-4 offset-md-1">
                 <h3 class="py-4">Members</h3>
