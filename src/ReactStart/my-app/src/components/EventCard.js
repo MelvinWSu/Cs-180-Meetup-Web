@@ -10,8 +10,9 @@ export default class EventCard extends Component {
         super(props)
 
         this.state = {
-            item: this.props.item,
-            key: this.props.key,
+            currentUser : null,
+            content: this.props.content,
+            index : this.props.index,
             joined: false
         }
 
@@ -21,69 +22,59 @@ export default class EventCard extends Component {
         //this.handleClick = this.handleClick.bind(this)
     }
 
-    /*buttonClicked(event) {
-        var self = this;
-        if (self.state.joined != true) {
-            alert("Joined Event");
-            self.state.joined = true;
-            auth.onAuthStateChanged(function (user) {
-                if (user) {
-                    var userkey = '';
-                    var ref = fire.database().ref("users");
-                    ref.orderByChild("email").equalTo(user.email).on("value", function (snapshot) {
-                        snapshot.forEach(function (data) {
-                            console.log(data.key);
-                            userkey = data.key;
-                        })
-                    })
-                    fire.database().ref("groups/" + window.location.pathname.split('/group/')[1] + "/event_list").push([userkey])
-                    console.log("1");
-                }
-            });
-        }
-        else {
-            alert("Already in Event");
-            console.log("0");
-        }
-    }*/
 
     componentDidMount() {
+        
         var self = this;
-        console.log("Current States:")
-        console.log(self.state)
-        var usersRef = fire.database().ref("groups/" + this.state.item + "/event_list/" + this.state.item);
-            usersRef.once("value").then(function(snapshot) {
-            self.setState({
-                eventName: snapshot.val().event_name,
-                eventTime: snapshot.val().time,
-                eventBio: snapshot.val().desc,
-                eventLoc: snapshot.val().loc
-            })   
-        });
+        auth.onAuthStateChanged(function(user){
+            console.log('onAuthStateChange')
+            if (user){
+                console.log("user")
+                self.setState({currentUser: user})
+            }
+            else{
+                console.log("user is null")
+            }
+        })
     }
 
-    /*handleClick(){
-        // NEEDS TO BE UPDATED
-        window.location.href = '/groups/' + this.state.item
-    }*/
+    
+    handleJoin = () => {
+        var self = this
+        if(self.state.joined){
+            self.setState({joined: false})
+            var usersRef = fire.database().ref("groups/" + self.state.content.group +"/event_list/" + self.state.index);
+            usersRef.once("value").then(function (snapshot) {
+                var list = snapshot.val().member_list
+                list.push(self.state.currentUser)
+                usersRef.update({member_list : list})
+
+            })
+
+
+        }
+        else{
+            self.setState({joined:true})
+        }
+    }
     
     render(){
+
+        
         return(
-            <div class="card group_card">
-                <div class="card-body">
-                    <h5 class="card-title">{this.state.eventName}</h5>
-                    <div class="card-text">
-                        <p>{this.state.eventBio}</p>
-                    </div>
-                    <div class="card-bottom">
-                        <img src="#" alt="profile_img" />
-                        <form>
-                            <div class="text-right">
-                                <input id="join_event" class="btn btn-info" type="button" /*onClick={this.buttonClicked.bind(this)}*/>Join Event</input>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+
+            <div>
+            <Card style = {{width : "400px", "maxWidth" : '400px'}}>
+                <Card.Title> {this.state.content['event_name']}</Card.Title>
+                <Card.Body>
+                    {this.state.content.time}
+                    <br/>
+                    {this.state.content['desc']}
+                </Card.Body>
+                <Card.Footer>
+                    <Button onClick = {this.handleJoin}>{!this.state.joined ? "+RSVP" : "-Leave" }</Button>
+                </Card.Footer>
+            </Card>
             </div>
         )
     }

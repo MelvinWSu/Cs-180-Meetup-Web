@@ -19,8 +19,14 @@ class Group extends Component {
       values: [],
       joined : false,
       eventList: [],
+      memberList: [],
+      userKey : null,
+      currentUser : null
      }
-    this.joined = false;
+    //this.joined = false;
+
+    this.handleJoin = this.handleJoinGroup.bind(this)
+    
   }
 
   buttonClicked(event) {
@@ -52,6 +58,7 @@ class Group extends Component {
   }
   
   getData() {
+    console.log("getData")
     setTimeout(() => {
       var self = this;
       var usersRef = fire.database().ref("groups/" + window.location.pathname.split('/group/')[1]);
@@ -59,52 +66,99 @@ class Group extends Component {
         self.setState({
           group_name: snapshot.val().group_name,
           group_bio: snapshot.val().bio,
-          eventList: snapshot.val().event_list
+          eventList: snapshot.val().event_list,
+          memberList : snapshot.val().member_list
         })
+
+        console.log("updated State")
+        console.log(self.state)
+
+
+
       });
     }, 100)
   }
 
-  goToCreateEvent(event) {    
+  goToCreateEvent = (event) => {    
     window.location.href = "/createEvent/" + window.location.pathname.split('/group/')[1];
     event.preventDefault();
   }
 
   componentDidMount() {
-    var self = this;
+
+    console.log("componentDidMount")
+    console.log("initial state:")
+    console.log(this.state)
+    var self = this
+    self.getData()
+    console.log("onAuthStateChanged")  
     auth.onAuthStateChanged(function (user) {
-      this.state = {
-        currentUser: user,
+      
+      if(user){
+        console.log("user is logged on ")
+        console.log(user)
+      
+        self.setState( {
+          currentUser: user,
+        })
         
+
+      }
+      else{
+        console.log("No user logged")
       }
 
-
-      console.log(user)
-      var ref = fire.database().ref("users");
-      ref.orderByChild("email").equalTo(user.email).on("value", function(snapshot){
-        snapshot.forEach(function(data) {
-          console.log(data);
-          console.log(data.ref_.path.pieces_[1]);
-          var groups = data.child("groups");
-          var x = document.getElementById("join_group");
-          groups.forEach(function(data2){
-            if (data2.val() === window.location.pathname.split('/group/')[1]) {
-              console.log(data2.val());
-              self.state.joined = true;
-            }
-          })
-          if (self.state.joined != true) {
-            x.value = "  Join Group  ";
-          }
-          else {
-            x.value = "Already Joined";
-          }
-        });
-      })
-    });  
-    this.getData();
+      
+    });
+      
   }
 
+  handleJoinGroup = () => {
+
+    console.log("handle join")
+
+    if (!this.state.joined){
+      
+
+      setTimeout(() =>  {
+      var self = this;
+      self.setState({joined: true})
+      
+      var userkey = null;
+      var ref = fire.database().ref("users");
+      console.log("states")
+      console.log(self.state)
+      ref.orderByChild("email").equalTo(self.state.currentUser.email).on("value", function(snapshot){
+        snapshot.forEach(function(data) {
+
+          
+          console.log("data")
+          console.log(data);
+          console.log(data.key);
+          self.setState({userKey: data.key})
+          
+          var groups = data.child("groups");
+          var x = document.getElementById("join_group");
+          
+
+          console.log()
+          fire.database().ref("users/" + self.state.userKey + "/groups").update([window.location.pathname.split('/group/')[1]]);
+          fire.database().ref("groups/" + window.location.pathname.split('/group/')[1] + "/member_list").push([self.state.userKey])
+          console.log("pushed user in member_list");
+          
+
+        });
+      })},100)
+      
+    
+
+    }
+    else{
+
+      //"NEEDS TO BE HANDLED"
+    }
+
+  }
   render() {
     return (
       <header>
@@ -130,7 +184,7 @@ class Group extends Component {
             <div class="row group_row">
               <div class="col-md-4">
                 <img src={group_placeholder}/>
-                <input id="join_group" class="btn btn-info" type="button" value= "  Join Group  " onClick={this.buttonClicked.bind(this)}></input>
+                <input id="join_group" class="btn btn-info" type="button" value= {!this.state.joined ? "Join" : "Already Joined"} onClick={this.handleJoin}></input>
               </div>
               <div class="col-xs-4">
                 <h3>{this.state.group_name}</h3>
@@ -145,12 +199,24 @@ class Group extends Component {
               <div class="col-xs-4">
                 <div class="row">
                   <h3 class="py-4">Events</h3>
-                  <a class="btn btn-primary ml-auto my-auto" onClick = {this.goToCreateEvent.bind(this)}>Create Event</a>
+                  {<a class="btn btn-primary ml-auto my-auto" onClick = {this.goToCreateEvent}>Create Event</a>
+                  }
                 </div>
                 {/* SPLIT EVENT_LIST ARRAY INTO SEPARATE ITEMS */}
-                {this.state.eventList.slice(1, this.state.eventList.length).map((item, key) =>
-                  <EventCard item={item} key={item.key} />
-                )}
+                { console.log("this state: ")}
+                 { console.log(this.state)}
+                 {console.log("type of eventList")}
+                 {console.log(typeof(this.state.eventList))}
+                 {console.log("this.state.eventList: ")}
+                 {console.log(Object.keys(this.state.eventList).slice(1,this.state.eventList.length))}
+                  {Object.keys(this.state.eventList).slice(1,this.state.eventList.length).map((Key) => 
+                    
+                    <div>
+                    <Row>
+                    <EventCard content = {this.state.eventList[Key]} index = {Key} />
+                    </Row>
+                    </div>
+                  )}
               </div>
               <div class="col-xs-4 offset-md-1">
                 <h3 class="py-4">Members</h3>

@@ -6,13 +6,15 @@ import { Image } from 'react-bootstrap';
 import img_placeholder from './pics/img_placeholder.png';
 import group_placeholder from './pics/group_placeholder.png';
 import fire from '../fire';
+import { tsPropertySignature } from '@babel/types';
 
 let event_details = {
   event_name: '',
   time: '',
   desc: '',
   loc: '',
-  member_list: ['']
+  member_list: ['0'],
+  group: ''
 }
 
 function addEvent() {
@@ -20,21 +22,25 @@ function addEvent() {
   event_details.time = document.getElementById("createevent_time").value;
   event_details.loc = document.getElementById("createevent_loc").value;
   event_details.desc = document.getElementById("createevent_desc").value;
+  
   var groupKey = window.location.pathname.split('/createEvent/')[1]
+  event_details.group = groupKey
   fire.database().ref("groups/" + groupKey + "/event_list").push().set(event_details);
-
   var event_num = fire.database().ref();
   event_num.once("value", function(snapshot) {
       fire.database().ref().update({event_num: snapshot.child("events").numChildren()});
     });
   alert("Event Creation Successful");
+  window.location.href = '/group/' +  window.location.pathname.split('/createEvent/')[1]
+
+
 }
 
-function CreateEvent() {
+function CreateEvent(props) {
   return (
     <header>
       <Navbar bg="light" expand="ex-lg">
-        <Navbar.Brand href="./main">Meetup</Navbar.Brand>
+        <Navbar.Brand href="/main">Meetup</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse>
           <Nav className="ml-auto">

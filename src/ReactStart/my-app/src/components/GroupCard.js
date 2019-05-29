@@ -13,7 +13,7 @@ export default class  GroupCard extends Component{
             item: this.props.item,
             key: this.props.key
         }
-
+ 
         
         console.log("start states")
         console.log(this.state)
@@ -44,7 +44,7 @@ export default class  GroupCard extends Component{
     }
 
     handleClick(){
-        window.location.href = '/groups/' + this.state.item
+        window.location.href = '/group/' + this.state.item
     }
 
     render(){
