@@ -56,7 +56,7 @@ export default class  GroupCard extends Component{
             <Col>
             <Card border = "primary" text = "dark" variant = 'light'>
             <Card.Header>{this.state.groupName}</Card.Header>
-            <Card.Img src={this.state.groupPhoto} style = {{height: '250px', width: '250px'}}  />
+            <Card.Img src={this.state.groupPhoto} style = {{height: '300px', width: '300px', "maxWidth" : '300px', "maxHeight": '300px'}}  />
             <Card.ImgOverlay>
             <Card.Body>
               
