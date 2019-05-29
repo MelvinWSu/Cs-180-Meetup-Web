@@ -11,6 +11,8 @@ export default class EventCard extends Component {
 
         this.state = {
             currentUser : null,
+            userKey : null,
+
             content: this.props.content,
             index : this.props.index,
             joined: false
@@ -26,11 +28,40 @@ export default class EventCard extends Component {
     componentDidMount() {
         
         var self = this;
+        console.log("EventCard DidMount state")
+        console.log(self.state)
         auth.onAuthStateChanged(function(user){
             console.log('onAuthStateChange')
             if (user){
                 console.log("user")
                 self.setState({currentUser: user})
+
+            
+                var ref = fire.database().ref("users");
+                ref.orderByChild("email").equalTo(self.state.currentUser.email).on("value", function(snapshot){
+                snapshot.forEach(function(data) {
+        
+                    self.setState({userKey: data.key})
+                  
+                    var memberListRef = fire.database().ref("groups/" + self.state.content.group + "/event_list/" + self.state.index + "/member_list")
+                    memberListRef.once("value").then(function (snapshot) {
+                    
+                    var list = snapshot.val();
+                    self.setState({currentMemberList: list})
+                    console.log("<<<<list>>>>")
+                    console.log(list)
+                    console.log("userKey")
+                    console.log(self.state.userKey)
+                    for( var i in list){
+                        if (list[i] == self.state.userKey){
+                        console.log("FOUND")
+                        self.setState({joined: true})
+                        }
+                    }
+            
+                    })
+
+                });})
             }
             else{
                 console.log("user is null")
@@ -41,20 +72,55 @@ export default class EventCard extends Component {
     
     handleJoin = () => {
         var self = this
-        if(self.state.joined){
-            self.setState({joined: false})
-            var usersRef = fire.database().ref("groups/" + self.state.content.group +"/event_list/" + self.state.index);
-            usersRef.once("value").then(function (snapshot) {
-                var list = snapshot.val().member_list
-                list.push(self.state.currentUser)
-                usersRef.update({member_list : list})
+        if(!self.state.joined){
 
-            })
-
+            setTimeout(() =>  {
+                self.setState({joined: true})
+                
+                var groupRef = fire.database().ref("groups/" + self.state.content.group + "/event_list/" + self.state.index + "/member_list")
+                groupRef.once("value").then(function (snapshot) {
+                  
+                  var list = snapshot.val()
+                  console.log("list being pushed")
+                  console.log(list)
+                  console.log(typeof(list))
+                  list.push(self.state.userKey)
+                  
+                  self.setState({currentMemberList : list})
+                  groupRef.set(list)
+              });
+                console.log("pushed user in member_list");
+                console.log("after push state")
+                console.log(self.state)
+                
+                });
 
         }
         else{
-            self.setState({joined:true})
+            setTimeout(() =>  {
+                self.setState({joined: false})
+                
+                var groupRef = fire.database().ref("groups/" + self.state.content.group + "/event_list/" + self.state.index + "/member_list")
+                groupRef.once("value").then(function (snapshot) {
+                  
+                  var list = snapshot.val()
+                  
+                  console.log("deleting list")
+                  console.log(list)
+                  for(var i = 0 ; i < list.length ; i++){
+                      if (list[i] == self.state.userKey){
+                          list.splice(i,1)
+                      }
+                  }
+                  
+                  self.setState({currentMemberList : list})
+                  groupRef.set(list)
+              });
+                console.log("pushed user in member_list");
+                console.log("after push state")
+                console.log(self.state)
+                
+                });
         }
     }
     

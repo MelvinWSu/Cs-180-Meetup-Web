@@ -28,34 +28,6 @@ class Group extends Component {
     this.handleJoin = this.handleJoinGroup.bind(this)
     
   }
-
-  buttonClicked(event) {
-    var self = this;
-    if (self.state.joined != true) {
-      alert("Joined Group");
-      self.state.joined = true;
-      auth.onAuthStateChanged(function(user){
-        if (user) {
-          var userkey = '';
-          var ref = fire.database().ref("users");
-          ref.orderByChild("email").equalTo(user.email).on("value", function(snapshot){
-          snapshot.forEach(function(data) {
-            console.log(data.key);
-            userkey = data.key;
-          })
-        })
-        fire.database().ref("users/" + userkey + "/groups").update([window.location.pathname.split('/group/')[1]]);
-        
-        fire.database().ref("groups/" + window.location.pathname.split('/group/')[1] + "/member_list").push([userkey])
-        console.log("1");
-        }
-      });
-    }
-    else {
-      alert("Already in Group");  
-      console.log("0");
-    }
-  }
   
   getData() {
     console.log("getData")
@@ -70,6 +42,7 @@ class Group extends Component {
           memberList : snapshot.val().member_list
         })
 
+        
         console.log("updated State")
         console.log(self.state)
 
@@ -86,11 +59,12 @@ class Group extends Component {
 
   componentDidMount() {
 
+    
     console.log("componentDidMount")
     console.log("initial state:")
     console.log(this.state)
     var self = this
-    self.getData()
+    
     console.log("onAuthStateChanged")  
     auth.onAuthStateChanged(function (user) {
       
@@ -102,7 +76,36 @@ class Group extends Component {
           currentUser: user,
         })
         
+        var ref = fire.database().ref("users");
+        ref.orderByChild("email").equalTo(self.state.currentUser.email).on("value", function(snapshot){
+          snapshot.forEach(function(data) {
+  
+            self.setState({userKey: data.key})
+            
+            var groups = data.child("groups");
 
+            var memberListRef = fire.database().ref("groups/" + window.location.pathname.split('/group/')[1] + "/member_list")
+            memberListRef.once("value").then(function (snapshot) {
+              
+              var list = snapshot.val()
+              console.log("<<<<list>>>>")
+              console.log(list)
+              console.log("userKey")
+              console.log(self.state.userKey)
+              for( var i in list){
+                if (list[i] == self.state.userKey){
+                  console.log("FOUND")
+                  self.setState({joined: true})
+                }
+              }
+    
+            })
+
+          });
+          console.log("done with setting USERKEY")
+        })
+
+     
       }
       else{
         console.log("No user logged")
@@ -110,6 +113,8 @@ class Group extends Component {
 
       
     });
+
+    self.getData()
       
   }
 
@@ -118,44 +123,80 @@ class Group extends Component {
     console.log("handle join")
 
     if (!this.state.joined){
-      
+      var self = this;
 
       setTimeout(() =>  {
-      var self = this;
       self.setState({joined: true})
       
       var userkey = null;
-      var ref = fire.database().ref("users");
-      console.log("states")
+      var userRef = fire.database().ref("users/" + self.state.userKey + "/groups");
+      console.log("userRef")
+      console.log(userRef)
+      userRef.once("value").then(function (snapshot) {
+        
+          var groupList = snapshot.val()
+          groupList.push(window.location.pathname.split('/group/')[1])
+          userRef.update(groupList)
+      });
+      var groupRef = fire.database().ref("groups/" + window.location.pathname.split('/group/')[1] + "/member_list")
+      groupRef.push([self.state.userKey])
+      groupRef.once("value").then(function (snapshot) {
+        
+        self.setState({memberList: snapshot.val()})
+    });
+      console.log("pushed user in member_list");
+      console.log("after push state")
       console.log(self.state)
-      ref.orderByChild("email").equalTo(self.state.currentUser.email).on("value", function(snapshot){
-        snapshot.forEach(function(data) {
-
-          
-          console.log("data")
-          console.log(data);
-          console.log(data.key);
-          self.setState({userKey: data.key})
-          
-          var groups = data.child("groups");
-          var x = document.getElementById("join_group");
-          
-
-          console.log()
-          fire.database().ref("users/" + self.state.userKey + "/groups").update([window.location.pathname.split('/group/')[1]]);
-          fire.database().ref("groups/" + window.location.pathname.split('/group/')[1] + "/member_list").push([self.state.userKey])
-          console.log("pushed user in member_list");
-          
-
-        });
-      })},100)
       
+      });
     
 
     }
     else{
 
-      //"NEEDS TO BE HANDLED"
+      var self = this;
+
+      //delete group in user database
+      
+      setTimeout(() =>{
+      
+      var userRef = fire.database().ref("users/" + self.state.userKey + "/groups");
+      userRef.once("value").then(function (snapshot) {
+        
+          var groupList = snapshot.val()
+          console.log("IN GROUPLIST DELETION")
+          console.log(groupList)
+          for(var i = 0; i < groupList.length ; i++){
+            if(groupList[i] == window.location.pathname.split('/group/')[1]){
+              console.log("deleting in GroupList ")
+              groupList.splice(i,1)
+              console.log(console.log(groupList))
+            }
+          }
+          userRef.set(groupList)
+      });
+      //delete user in member_list
+      var groupRef = fire.database().ref("groups/" + window.location.pathname.split('/group/')[1] + "/member_list")
+      groupRef.once("value").then(function (snapshot) {
+        var theMemberList = snapshot.val()
+        console.log("theMemberList type")
+        console.log(typeof(theMemberList))
+        var newList = []
+        for(var i in theMemberList){
+          console.log("i:")
+          console.log(i)
+          if(theMemberList[i] != self.state.userKey){
+            newList.push(theMemberList[i])
+          }
+        }
+        groupRef.set(newList)
+        self.setState({memberList: newList})
+        self.setState({joined: false})
+      });
+
+      
+      });
+      
     }
 
   }
@@ -184,7 +225,7 @@ class Group extends Component {
             <div class="row group_row">
               <div class="col-md-4">
                 <img src={group_placeholder}/>
-                <input id="join_group" class="btn btn-info" type="button" value= {!this.state.joined ? "Join" : "Already Joined"} onClick={this.handleJoin}></input>
+                <input id="join_group" class="btn btn-info" type="button" value= {!this.state.joined ? "Join" : "Leave Group"} onClick={this.handleJoin}></input>
               </div>
               <div class="col-xs-4">
                 <h3>{this.state.group_name}</h3>
@@ -203,17 +244,11 @@ class Group extends Component {
                   }
                 </div>
                 {/* SPLIT EVENT_LIST ARRAY INTO SEPARATE ITEMS */}
-                { console.log("this state: ")}
-                 { console.log(this.state)}
-                 {console.log("type of eventList")}
-                 {console.log(typeof(this.state.eventList))}
-                 {console.log("this.state.eventList: ")}
-                 {console.log(Object.keys(this.state.eventList).slice(1,this.state.eventList.length))}
-                  {Object.keys(this.state.eventList).slice(1,this.state.eventList.length).map((Key) => 
+                {Object.keys(this.state.eventList).slice(1,this.state.eventList.length).map((Key) => 
                     
                     <div>
                     <Row>
-                    <EventCard content = {this.state.eventList[Key]} index = {Key} />
+                    <EventCard content = {this.state.eventList[Key]} groupID = {window.location.pathname.split('/group/')[1]} index = {Key} currentUser = {this.state.userKey} />
                     </Row>
                     </div>
                   )}
