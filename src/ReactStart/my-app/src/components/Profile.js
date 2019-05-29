@@ -9,7 +9,7 @@ import {BrowserRouter as Router, Route} from 'react-router-dom';
 import fire, {auth} from '../fire';
 import Logout from './Logout';
 import GroupCard from './GroupCard';
-
+import UploadFile from './UploadFile'
 class Profile extends Component{
   constructor(props){
     super(props);
@@ -20,7 +20,7 @@ class Profile extends Component{
           first_name: "loading...",
           last_name: "loading...",
           bio: "loading...",
-          picture: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG/220px-Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG",
+          picture: null,
           uniqueLink: "loading...",
           email: "https://www.tacobell.com/",
           groups : [],
@@ -121,10 +121,23 @@ class Profile extends Component{
     var the_bio = document.getElementById("profile_bio").value;
     var the_pic = document.getElementById("profile_pic").value;
 
-
+    console.log("the pic")
     console.log(the_pic)
+    
+    
     //update info on database
     var getKey = window.location.pathname.split('/user/')[1]
+
+    //initialize firebase storage
+    
+    var reference = "Profile_Image"
+    var key = getKey
+    var file = the_pic
+
+    //UploadFile(reference, key, file)
+
+    console.log("the file:")
+    console.log(file)
     
     fire.database().ref("users/" + getKey).update({
       f_name: the_first_name,
@@ -203,13 +216,16 @@ class Profile extends Component{
   handleViewRender(props){
     return(
       
+      
       <div>
           <div class="container mt-4 py-4">
             <div class="row">
               <div class="col-md-4 px-4">
+               {props.picture ? <img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG/220px-Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG" height = "300" width = "300" id="profile_img" />   
+                                    : "Loading Image..."}
                 <div class="card border-0">
                   <div class="card-head">
-                    <img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG/220px-Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG" height = "300" width = "300" id="profile_img"/>    
+                      
                     </div> 
                 </div>
               </div>
@@ -267,12 +283,14 @@ class Profile extends Component{
                                                       last_name = {this.state.last_name}
                                                       email = {this.state.email}
                                                       bio = {this.state.bio}
-                                                      submit = {this.handleEditSubmit}/>
+                                                      submit = {this.handleEditSubmit}
+                                                      picture = {this.state.picture}/>
                                                     :
                               <this.handleViewRender first_name = {this.state.first_name}
                                 last_name = {this.state.last_name}
                                 email = {this.state.email}
                                 bio = {this.state.bio}
+                                picture = {this.state.picture}
                                   />}
         
       </header>
@@ -281,7 +299,7 @@ class Profile extends Component{
       <Row>
       <Col></Col>
       <Col xs = {8}>
-      <Carousel style = {{"background-color" : "black"}}>
+      <Carousel style = {{"background-color" : "white"}}>
         
         {this.state.groups.slice(1,this.state.groups.length).map((item,key) =>
           
