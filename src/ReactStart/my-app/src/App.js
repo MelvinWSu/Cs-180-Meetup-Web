@@ -22,13 +22,7 @@ class App extends Component{
 
   constructor(){
     super()
-    var getUID = fire.database().ref("users");
-      var email = ""
-        getUID.orderByChild('email').equalTo(email).on("value", function(snapshot) {
-          snapshot.forEach(function(child) { 
-            window.location.href = 'profile/user/' + child.key;
-          })
-        });
+    
       
   }
   render(){
@@ -37,7 +31,7 @@ class App extends Component{
         <div className="App">
           <Route exact path = "/" component = {Homepage} />
           <Route path = "/CreateGroup" component = {CreateGroup} />
-          <Route path = "/CreateEvent" component = {CreateEvent} />
+          <Route path = "/createEvent/:groupkey" component = {CreateEvent} />
           <Route path = "/group/:key" component = {Group} />
           <Route path = "/Login" component = {Login} />
           <Route path = "/main" component = {Mainpage} />
