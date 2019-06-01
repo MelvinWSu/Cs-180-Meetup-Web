@@ -9,7 +9,8 @@ import {BrowserRouter as Router, Route} from 'react-router-dom';
 import fire, {auth} from '../fire';
 import Logout from './Logout';
 import GroupCard from './GroupCard';
-import UploadFile from './UploadFile'
+import {storage} from '../fire';
+
 class Profile extends Component{
   constructor(props){
     super(props);
@@ -31,8 +32,41 @@ class Profile extends Component{
         }
      this.handleEdit = this.handleEditButton.bind(this);
      this.handleEditSubmit = this.handleEditSubmit.bind(this)
+     this.handleChange = this.handleChange.bind(this)
+     this.handleUpload = this.handleUpload.bind(this)
   }
- 
+  
+  handleChange = event => {
+    if (event.target.files[0]) {
+      /*const picture = event.target.files[0];
+      this.setState(() => ({picture}));*/
+      this.setState({
+        picture: event.target.files[0]
+      })
+    }
+  }
+
+  handleUpload = () => {
+    //const {picture} = this.state;
+    var fileName = this.props.picture.name;
+    var storageRef = fire.storage().ref('/images/' + fileName);
+
+    var uploadTask = storageRef.put(this.props.picture);
+    uploadTask.on('state_changed', 
+    function(snapshot) {
+
+    }, 
+    function(error) {
+      console.log(error)
+    },
+    function() {
+      //storage.ref('images').child(picture.name).getDownloadURL().then(uniqueLink => {
+      var downloadURL = uploadTask.snapshot.downloadURL;  
+      console.log(downloadURL)
+      }
+    );
+  }
+
   getData() {
     //url will probably look like Profile/user/<unique key>
     //firebase key, uid from email creation, possible custom gen can be used, firebase key is used
@@ -163,7 +197,7 @@ class Profile extends Component{
     return(
       <div>
         <br/>
-        <Button onClick = {props.submit}> Submit </Button>
+        <Button onClick = {props.submit} onClick={this.handleUpload}> Submit </Button>
           <div class="container mt-4 py-4">
             <div class="row">
               <div class="col-md-4 px-4">
@@ -176,7 +210,7 @@ class Profile extends Component{
                         <Row>
                           <Col></Col>
                           <Col>
-                          <input id = "profile_pic" type="file" class="file-select" accept="image/*"/>
+                          <input id = "profile_pic" type="file" class="file-select" accept="image/*" /*onChange={this.handleChange}*//>
                           </Col>
                           <Col></Col>
 
@@ -321,8 +355,8 @@ class Profile extends Component{
   }
 }
 
-function uploadImage() {
+/*function uploadImage() {
 
-};
+};*/
 
 export default Profile
