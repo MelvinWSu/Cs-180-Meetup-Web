@@ -9,7 +9,7 @@ import {BrowserRouter as Router, Route} from 'react-router-dom';
 import fire, {auth} from '../fire';
 import Logout from './Logout';
 import GroupCard from './GroupCard';
-import UploadFile from './UploadFile'
+
 class Profile extends Component{
   constructor(props){
     super(props);

@@ -16,7 +16,8 @@ class Group extends React.Component {
       group_name: "loading...",
       group_bio: "loading...",
       values: [],
-      joined : false
+      joined : false,
+      listOfPositions: []
      }
     this.joined = false;
   }
@@ -67,12 +68,13 @@ class Group extends React.Component {
     event.preventDefault();
   }
 
+  
+
   componentDidMount() {
     var self = this;
     auth.onAuthStateChanged(function (user) {
       this.state = {
         currentUser: user,
-        
       }
 
 
@@ -101,6 +103,8 @@ class Group extends React.Component {
     });  
     this.getData();
   }
+
+  
 
   render() {
     return (
@@ -189,15 +193,18 @@ class Group extends React.Component {
               <h3>Discussion</h3>
             </div>
             <div class="row">
-            <div class="col-xs-4">
-              <form action="#" method="get">
-                <div class="form-group">
-                  <textarea id="groupdis_text" class="form-control dis_card" type="text" rows="4" placeholder="Enter your message here" name="groupdis_text" required></textarea>
-                  <div class="text-right">
-                    <button id="submit_message" class="btn btn-primary" type="button">Enter message</button>
-                  </div>
+            <div class = "col-xs-12">
+              <div class = "card member_card">
+                <div class = "card-body text-left">
+                  {displayList()} 
+                  <div class="form-group">
+                    <textarea id="groupdis_text" class="form-control dis_card" type="text" rows="4" placeholder="Enter your message here" name="groupdis_text" required></textarea>
+                    <div class="text-right">
+                      <button id="submit_message" class="btn btn-primary" onClick = {saveMessage}>Enter message</button>
+                    </div>
+                  </div>                 
                 </div>
-              </form>
+              </div>
             </div>
             </div>
           </div> 
@@ -205,6 +212,56 @@ class Group extends React.Component {
       </header>
     );
   }
+}
+
+async function saveMessage() {
+  var date = new Date().getTime();
+  var str = new Date(date);
+  await auth.onAuthStateChanged(function(user){
+    if (user) {
+      fire.database().ref('messages').push({
+        name: user.email,
+        timestamp: str.toString(),
+        message: document.getElementById("groupdis_text").value
+      });
+    }
+  })
+}
+
+function displayList() {
+  var message_list = [];
+  var ref = fire.database().ref("messages");
+  ref.orderByKey().on("value", function(snapshot){
+    snapshot.forEach(function(data){
+      message_list.push({
+        email: data.val().name,
+        message: data.val().message,
+        time: data.val().timestamp,
+        key: data.key
+      });
+    })
+  })
+  return message_list.map(item => {
+    return (
+      <div>
+        <p class = "card-text" key = {item.key}>
+          <small class = "text-muted" >
+            <img src={group_placeholder} width="50" height = "50"/>
+            {item.email}
+          </small>
+        </p>
+        <p class = "card-text" key={item.key}>
+        {item.message}
+        </p>
+        <p class = "card-text" key = {item.key}>
+          <small class= "text-muted">
+            {item.time}
+          </small>
+        </p>
+        <hr></hr>
+      </div>
+    );
+  });
 }
 
 export default Group;
