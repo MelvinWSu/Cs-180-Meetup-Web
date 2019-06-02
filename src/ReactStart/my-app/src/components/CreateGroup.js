@@ -39,12 +39,15 @@ class CreateGroup extends Component {
       }
     })
     await console.log(self);
-    fire.database().ref("groups").push(self.state);
-    var group_num = fire.database().ref();
-    group_num.once("value", function(snapshot) {
-        fire.database().ref().update({group_num: snapshot.child("groups").numChildren()});
+    var newGroup = fire.database().ref("groups").push(self.state);
+    alert(newGroup.key);
+    var getFirebase = fire.database().ref();
+    getFirebase.once("value", function(snapshot) {
+        fire.database().ref().update({getFirebase: snapshot.child("groups").numChildren()});
       });
     alert("Group Creation Successful");
+    window.location.href = "group/" + newGroup.key
+    ;
   }
 
   componentDidMount() {

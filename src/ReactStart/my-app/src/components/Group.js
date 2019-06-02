@@ -76,7 +76,7 @@ class Group extends Component {
   }  
 
   componentDidMount() {
-
+    
     console.log("componentDidMount")
     console.log("initial state:")
     console.log(this.state)
@@ -151,21 +151,22 @@ class Group extends Component {
       console.log(userRef)
       userRef.once("value").then(function (snapshot) {
         var groupList = snapshot.val()
-        snapshot.numChildren()
-        console.log("groupList")
-        console.log(groupList);
-        userRef.push(window.location.pathname.split('/group/')[1])        
+        groupList.push(window.location.pathname.split('/group/')[1])
+        userRef.update(groupList)
       });
       var groupRef = fire.database().ref("groups/" + window.location.pathname.split('/group/')[1] + "/member_list")
-      groupRef.push([self.state.userKey])
-      groupRef.once("value").then(function (snapshot) {  
-        self.setState({memberList: snapshot.val()})
+      groupRef.once("value").then(function(snapshot) {
+        var mem_list  = snapshot.val()
+        mem_list.push(self.state.userKey)
+        groupRef.update(mem_list)
+      })
+      
       });
       console.log("pushed user in member_list");
       console.log("after push state")
       console.log(self.state)
-      }); 
     }
+    
     else{
       var self = this;
 
@@ -179,12 +180,10 @@ class Group extends Component {
           console.log("IN GROUPLIST DELETION")
           console.log(groupList)
           console.log(snapshot.numChildren())
-          for(var key in groupList){
-            console.log(key)
-            console.log(groupList[key])
-            if(groupList[key] == window.location.pathname.split('/group/')[1]){
+          for(var i = 0; i < groupList.length ; i++){
+            if(groupList[i] == window.location.pathname.split('/group/')[1]){
               console.log("deleting in GroupList ")
-              delete groupList[key]
+              groupList.splice(i,1)
               console.log(console.log(groupList))
             }
           }
@@ -255,6 +254,16 @@ class Group extends Component {
       </div>
     )
   }
+
+  changeProfileLinking() {
+    
+    return (
+      <NavItem className="ml-auto">
+        <Nav.Link id="profile_linking" href="#">Profile</Nav.Link>
+      </NavItem>
+    )
+  }
+
   render() {
     return (
       <header>
@@ -263,9 +272,7 @@ class Group extends Component {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse>
             <Nav className="ml-auto">
-              <NavItem className="ml-auto">
-                <Nav.Link href="./profile">Profile</Nav.Link>
-              </NavItem>
+              <this.changeProfileLinking></this.changeProfileLinking>
               <NavItem className="ml-auto">
                 <Nav.Link className="ml-auto" href="/create_group">Create Group</Nav.Link>
               </NavItem>
