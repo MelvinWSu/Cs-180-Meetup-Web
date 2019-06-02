@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './style.css';
 import { Button } from 'react-bootstrap';
-import { Nav, Navbar, NavItem } from 'react-bootstrap';
+import { Nav, Form, Navbar, NavItem } from 'react-bootstrap';
 import { Carousel, Row, Col } from 'react-bootstrap';
 import img_placeholder from './pics/img_placeholder.png';
 import group_placeholder from './pics/group_placeholder.png';
@@ -22,12 +22,14 @@ class Group extends Component {
       eventList: [],
       memberList: [],
       userKey : null,
-      currentUser : null
+      currentUser : null,
+      editing: false,
+      permission: false
      }
     //this.joined = false;
 
     this.handleJoin = this.handleJoinGroup.bind(this)
-    
+    this.handleEditSubmit = this.handleEditSubmit.bind(this)
   }
   
   getData() {
@@ -38,17 +40,12 @@ class Group extends Component {
       usersRef.once("value").then(function (snapshot) {
         self.setState({
           group_name: snapshot.val().group_name,
-          group_bio: snapshot.val().bio,
+          group_bio: snapshot.val().group_bio,
           eventList: snapshot.val().event_list,
           memberList : snapshot.val().member_list
         })
-
-        
         console.log("updated State")
         console.log(self.state)
-
-
-
       });
     }, 100)
   }
@@ -58,7 +55,25 @@ class Group extends Component {
     event.preventDefault();
   }
 
-  
+  handleEditButton = () => {
+
+    console.log("current states:")
+    console.log(this.state)
+    setTimeout( () => {
+      var self = this;
+      
+      if (self.state.editing == false){
+        self.setState({
+          editing : true
+        })  
+      }
+      else{
+        self.setState({
+          editing:false
+        })
+      }
+    })
+  }  
 
   componentDidMount() {
 
@@ -73,7 +88,7 @@ class Group extends Component {
       if(user){
         console.log("user is logged on ")
         console.log(user)
-      
+        
         self.setState( {
           currentUser: user,
         })
@@ -81,8 +96,8 @@ class Group extends Component {
         var ref = fire.database().ref("users");
         ref.orderByChild("email").equalTo(self.state.currentUser.email).on("value", function(snapshot){
           snapshot.forEach(function(data) {
-  
-            self.setState({userKey: data.key})
+             
+            self.setState({userKey: data.key, permissions: true})
             
             var groups = data.child("groups");
 
@@ -120,8 +135,8 @@ class Group extends Component {
       
   }
 
-  handleJoinGroup = () => {
-
+  handleJoinGroup = (event) => {
+    event.preventDefault();
     console.log("handle join")
 
     if (!this.state.joined){
@@ -135,27 +150,23 @@ class Group extends Component {
       console.log("userRef")
       console.log(userRef)
       userRef.once("value").then(function (snapshot) {
-        
-          var groupList = snapshot.val()
-          groupList.push(window.location.pathname.split('/group/')[1])
-          userRef.update(groupList)
+        var groupList = snapshot.val()
+        snapshot.numChildren()
+        console.log("groupList")
+        console.log(groupList);
+        userRef.push(window.location.pathname.split('/group/')[1])        
       });
       var groupRef = fire.database().ref("groups/" + window.location.pathname.split('/group/')[1] + "/member_list")
       groupRef.push([self.state.userKey])
-      groupRef.once("value").then(function (snapshot) {
-        
+      groupRef.once("value").then(function (snapshot) {  
         self.setState({memberList: snapshot.val()})
-    });
+      });
       console.log("pushed user in member_list");
       console.log("after push state")
       console.log(self.state)
-      
-      });
-    
-
+      }); 
     }
     else{
-
       var self = this;
 
       //delete group in user database
@@ -164,14 +175,16 @@ class Group extends Component {
       
       var userRef = fire.database().ref("users/" + self.state.userKey + "/groups");
       userRef.once("value").then(function (snapshot) {
-        
           var groupList = snapshot.val()
           console.log("IN GROUPLIST DELETION")
           console.log(groupList)
-          for(var i = 0; i < groupList.length ; i++){
-            if(groupList[i] == window.location.pathname.split('/group/')[1]){
+          console.log(snapshot.numChildren())
+          for(var key in groupList){
+            console.log(key)
+            console.log(groupList[key])
+            if(groupList[key] == window.location.pathname.split('/group/')[1]){
               console.log("deleting in GroupList ")
-              groupList.splice(i,1)
+              delete groupList[key]
               console.log(console.log(groupList))
             }
           }
@@ -194,13 +207,53 @@ class Group extends Component {
         groupRef.set(newList)
         self.setState({memberList: newList})
         self.setState({joined: false})
-      });
-
-      
-      });
-      
+        });
+      }); 
     }
+    
+  }
+  handleEditSubmit = () => {
+    var new_group_name = document.getElementById("group_edit_name").value;
+    var new_group_bio = document.getElementById("group_edit_bio").value;
 
+    var getKey = window.location.pathname.split('/group/')[1]
+
+    fire.database().ref("groups/" + getKey).update({
+      group_name: new_group_name,
+      group_bio: new_group_bio,
+    });
+
+    var self = this
+
+    self.setState({
+      group_name: new_group_name,
+      group_bio: new_group_bio,
+      editing : false
+    })
+  }
+
+  handleEditRender(props){
+    return (
+      <div class="col-xs-4">
+        <h3>Group Name</h3>
+        <div className="form-group">
+          <input id = "group_edit_name" type="text" placeholder={props.group_name} required/>
+        </div>
+        <p>Group Bio</p>
+        <div className="form-group">
+          <Form.Control id = "group_edit_bio" as="textarea" rows="3" placeholder={props.group_bio} />
+        </div>
+        <Button onClick = {props.submit}> Submit </Button>
+      </div>
+    )
+  }
+  handleViewRender(props){
+    return (
+      <div class="col-xs-4">
+        <h3>{props.group_name}</h3>
+        <p>{props.group_bio}</p>
+      </div>
+    )
   }
   render() {
     return (
@@ -223,15 +276,29 @@ class Group extends Component {
           </Navbar.Collapse>
         </Navbar>
         <main>
+          <div class = "row justify-content-md-center">
           <div class="container">
             <div class="row group_row">
               <div class="col-md-4">
                 <img src={group_placeholder}/>
-                <input id="join_group" class="btn btn-info" type="button" value= {!this.state.joined ? "Join" : "Leave Group"} onClick={this.handleJoin}></input>
+                <div class="col-md-12">
+                  <input id="join_group" class="btn btn-info" type="button" value= {!this.state.joined ? "Join" : "Leave Group"} onClick={this.handleJoin}></input>
+                  <Button variant = {this.state.permissions ? "primary" : "outline-light"} disabled = {!this.state.permissions} onClick = {this.handleEditButton}> {this.state.editing ? 'Cancel Edit' : 'Edit' }</Button>
+                </div>
               </div>
-              <div class="col-xs-4">
-                <h3>{this.state.group_name}</h3>
-                <p>{this.state.group_bio}</p>
+              <div class="col-md-4">
+                {this.state.editing ? 
+                <this.handleEditRender 
+                  group_name = {this.state.group_name}
+                  group_bio = {this.state.group_bio}
+                  submit = {this.handleEditSubmit}
+                />
+                :
+                <this.handleViewRender
+                  group_name = {this.state.group_name}
+                  group_bio = {this.state.group_bio}
+                />
+                }
               </div>
             </div>
             <div>
@@ -239,21 +306,20 @@ class Group extends Component {
           </div> 
           <div class="container">
             <div class="row group_row">
-              <div class="col-xs-4">
+              <div class="col-xs-6">
                 <div class="row">
-                  <h3 class="py-4">Events</h3>
+                  <h3 class="py-4 mr-4" >Events</h3>
                   {<a class="btn btn-primary ml-auto my-auto" onClick = {this.goToCreateEvent}>Create Event</a>
                   }
                 </div>
-                {/* SPLIT EVENT_LIST ARRAY INTO SEPARATE ITEMS */}
-                {Object.keys(this.state.eventList).slice(1,this.state.eventList.length).map((Key) => 
-                    
-                    <div>
+                
+                {Object.keys(this.state.eventList).slice(1,this.state.eventList.length).map((Key) =>     
+                  <div>
                     <Row>
-                    <EventCard content = {this.state.eventList[Key]} groupID = {window.location.pathname.split('/group/')[1]} index = {Key} currentUser = {this.state.userKey} />
+                      <EventCard content = {this.state.eventList[Key]} groupID = {window.location.pathname.split('/group/')[1]} index = {Key} currentUser = {this.state.userKey} />
                     </Row>
-                    </div>
-                  )}
+                  </div>
+                )}
               </div>
               <div class="col-xs-4 offset-md-1">
                 <h3 class="py-4">Members</h3>
@@ -283,9 +349,9 @@ class Group extends Component {
               <h3>Discussion</h3>
             </div>
             <div class="row">
-            <div class = "col-xs-12">
-              <div class = "card member_card">
-                <div class = "card-body text-left">
+            <div class = "col-sm-12">
+              <div class= "card">
+                <div class = "card-body text-left scroll">
                   {displayList()} 
                   <div class="form-group">
                     <textarea id="groupdis_text" class="form-control dis_card" type="text" rows="4" placeholder="Enter your message here" name="groupdis_text" required></textarea>
@@ -298,6 +364,7 @@ class Group extends Component {
             </div>
             </div>
           </div> 
+          </div>
         </main>
       </header>
     );
@@ -307,15 +374,17 @@ class Group extends Component {
 async function saveMessage() {
   var date = new Date().getTime();
   var str = new Date(date);
+  var mess = document.getElementById("groupdis_text").value.replace(/(?:\r\n|\r|\n)/g, '<br/>');
   await auth.onAuthStateChanged(function(user){
     if (user) {
       fire.database().ref('groups/' + window.location.pathname.split('/group/')[1] + '/messages').push({
         name: user.email,
         timestamp: str.toString(),
-        message: document.getElementById("groupdis_text").value
+        message: mess
       });
     }
   })
+  document.location.reload();
 }
 
 function displayList() {
@@ -341,7 +410,9 @@ function displayList() {
           </small>
         </p>
         <p class = "card-text" key={item.key}>
-        {item.message}
+          <pre>
+            {item.message}
+          </pre>
         </p>
         <p class = "card-text" key = {item.key}>
           <small class= "text-muted">
