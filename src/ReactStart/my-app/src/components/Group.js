@@ -62,7 +62,6 @@ class Group extends Component {
 
   componentDidMount() {
 
-    
     console.log("componentDidMount")
     console.log("initial state:")
     console.log(this.state)
@@ -310,7 +309,7 @@ async function saveMessage() {
   var str = new Date(date);
   await auth.onAuthStateChanged(function(user){
     if (user) {
-      fire.database().ref('messages').push({
+      fire.database().ref('groups/' + window.location.pathname.split('/group/')[1] + '/messages').push({
         name: user.email,
         timestamp: str.toString(),
         message: document.getElementById("groupdis_text").value
@@ -321,7 +320,7 @@ async function saveMessage() {
 
 function displayList() {
   var message_list = [];
-  var ref = fire.database().ref("messages");
+  var ref = fire.database().ref('groups/' + window.location.pathname.split('/group/')[1] + "/messages");
   ref.orderByKey().on("value", function(snapshot){
     snapshot.forEach(function(data){
       message_list.push({
