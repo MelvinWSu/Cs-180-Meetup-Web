@@ -13,7 +13,7 @@ export default class  GroupCard extends Component{
             item: this.props.item,
             key: this.props.key
         }
-
+ 
         
         console.log("start states")
         console.log(this.state)
@@ -44,7 +44,7 @@ export default class  GroupCard extends Component{
     }
 
     handleClick(){
-        window.location.href = '/groups/' + this.state.item
+        window.location.href = '/group/' + this.state.item
     }
 
     render(){
@@ -56,7 +56,7 @@ export default class  GroupCard extends Component{
             <Col>
             <Card border = "primary" text = "dark" variant = 'light'>
             <Card.Header>{this.state.groupName}</Card.Header>
-            <Card.Img src={this.state.groupPhoto} style = {{height: '250px', width: '250px'}}  />
+            <Card.Img src={this.state.groupPhoto} style = {{height: '300px', width: '300px', "maxWidth" : '300px', "maxHeight": '300px'}}  />
             <Card.ImgOverlay>
             <Card.Body>
               

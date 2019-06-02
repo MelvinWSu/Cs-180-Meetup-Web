@@ -2,12 +2,13 @@ import React, {Component} from 'react';
 import './style.css';
 import { Button } from 'react-bootstrap';
 import { Nav, Navbar, NavItem } from 'react-bootstrap';
-import { Image } from 'react-bootstrap';
+import { Carousel, Row, Col } from 'react-bootstrap';
 import img_placeholder from './pics/img_placeholder.png';
 import group_placeholder from './pics/group_placeholder.png';
 import fire, {auth} from '../fire';
+import EventCard from './EventCard';
 
-class Group extends React.Component {
+class Group extends Component {
   constructor(props) {
     super(props);
     var self = ''
@@ -17,40 +18,20 @@ class Group extends React.Component {
       group_bio: "loading...",
       values: [],
       joined : false,
-      listOfPositions: []
+      listOfPositions: [],
+      eventList: [],
+      memberList: [],
+      userKey : null,
+      currentUser : null
      }
-    this.joined = false;
-  }
+    //this.joined = false;
 
-  buttonClicked(event) {
-    var self = this;
-    if (self.state.joined != true) {
-      alert("Joined Group");
-      self.state.joined = true;
-      auth.onAuthStateChanged(function(user){
-        if (user) {
-          var userkey = '';
-          var ref = fire.database().ref("users");
-          ref.orderByChild("email").equalTo(user.email).on("value", function(snapshot){
-          snapshot.forEach(function(data) {
-            console.log(data.key);
-            userkey = data.key;
-          })
-        })
-        fire.database().ref("users/" + userkey + "/groups").update([window.location.pathname.split('/group/')[1]]);
-        
-        fire.database().ref("groups/" + window.location.pathname.split('/group/')[1] + "/member_list").push([userkey])
-        console.log("1");
-        }
-      });
-    }
-    else {
-      alert("Already in Group");  
-      console.log("0");
-    }
+    this.handleJoin = this.handleJoinGroup.bind(this)
+    
   }
   
   getData() {
+    console.log("getData")
     setTimeout(() => {
       var self = this;
       var usersRef = fire.database().ref("groups/" + window.location.pathname.split('/group/')[1]);
@@ -58,12 +39,21 @@ class Group extends React.Component {
         self.setState({
           group_name: snapshot.val().group_name,
           group_bio: snapshot.val().bio,
+          eventList: snapshot.val().event_list,
+          memberList : snapshot.val().member_list
         })
+
+        
+        console.log("updated State")
+        console.log(self.state)
+
+
+
       });
     }, 100)
   }
 
-  goToCreateEvent(event) {    
+  goToCreateEvent = (event) => {    
     window.location.href = "/createEvent/" + window.location.pathname.split('/group/')[1];
     event.preventDefault();
   }
@@ -71,41 +61,148 @@ class Group extends React.Component {
   
 
   componentDidMount() {
-    var self = this;
+
+    
+    console.log("componentDidMount")
+    console.log("initial state:")
+    console.log(this.state)
+    var self = this
+    
+    console.log("onAuthStateChanged")  
     auth.onAuthStateChanged(function (user) {
-      this.state = {
-        currentUser: user,
+      
+      if(user){
+        console.log("user is logged on ")
+        console.log(user)
+      
+        self.setState( {
+          currentUser: user,
+        })
+        
+        var ref = fire.database().ref("users");
+        ref.orderByChild("email").equalTo(self.state.currentUser.email).on("value", function(snapshot){
+          snapshot.forEach(function(data) {
+  
+            self.setState({userKey: data.key})
+            
+            var groups = data.child("groups");
+
+            var memberListRef = fire.database().ref("groups/" + window.location.pathname.split('/group/')[1] + "/member_list")
+            memberListRef.once("value").then(function (snapshot) {
+              
+              var list = snapshot.val()
+              console.log("<<<<list>>>>")
+              console.log(list)
+              console.log("userKey")
+              console.log(self.state.userKey)
+              for( var i in list){
+                if (list[i] == self.state.userKey){
+                  console.log("FOUND")
+                  self.setState({joined: true})
+                }
+              }
+    
+            })
+
+          });
+          console.log("done with setting USERKEY")
+        })
+
+     
+      }
+      else{
+        console.log("No user logged")
       }
 
+      
+    });
 
-      console.log(user)
-      var ref = fire.database().ref("users");
-      ref.orderByChild("email").equalTo(user.email).on("value", function(snapshot){
-        snapshot.forEach(function(data) {
-          console.log(data);
-          console.log(data.ref_.path.pieces_[1]);
-          var groups = data.child("groups");
-          var x = document.getElementById("join_group");
-          groups.forEach(function(data2){
-            if (data2.val() === window.location.pathname.split('/group/')[1]) {
-              console.log(data2.val());
-              self.state.joined = true;
-            }
-          })
-          if (self.state.joined != true) {
-            x.value = "  Join Group  ";
-          }
-          else {
-            x.value = "Already Joined";
-          }
-        });
-      })
-    });  
-    this.getData();
+    self.getData()
+      
   }
 
-  
+  handleJoinGroup = () => {
 
+    console.log("handle join")
+
+    if (!this.state.joined){
+      var self = this;
+
+      setTimeout(() =>  {
+      self.setState({joined: true})
+      
+      var userkey = null;
+      var userRef = fire.database().ref("users/" + self.state.userKey + "/groups");
+      console.log("userRef")
+      console.log(userRef)
+      userRef.once("value").then(function (snapshot) {
+        
+          var groupList = snapshot.val()
+          groupList.push(window.location.pathname.split('/group/')[1])
+          userRef.update(groupList)
+      });
+      var groupRef = fire.database().ref("groups/" + window.location.pathname.split('/group/')[1] + "/member_list")
+      groupRef.push([self.state.userKey])
+      groupRef.once("value").then(function (snapshot) {
+        
+        self.setState({memberList: snapshot.val()})
+    });
+      console.log("pushed user in member_list");
+      console.log("after push state")
+      console.log(self.state)
+      
+      });
+    
+
+    }
+    else{
+
+      var self = this;
+
+      //delete group in user database
+      
+      setTimeout(() =>{
+      
+      var userRef = fire.database().ref("users/" + self.state.userKey + "/groups");
+      userRef.once("value").then(function (snapshot) {
+        
+          var groupList = snapshot.val()
+          console.log("IN GROUPLIST DELETION")
+          console.log(groupList)
+          for(var i = 0; i < groupList.length ; i++){
+            if(groupList[i] == window.location.pathname.split('/group/')[1]){
+              console.log("deleting in GroupList ")
+              groupList.splice(i,1)
+              console.log(console.log(groupList))
+            }
+          }
+          userRef.set(groupList)
+      });
+      //delete user in member_list
+      var groupRef = fire.database().ref("groups/" + window.location.pathname.split('/group/')[1] + "/member_list")
+      groupRef.once("value").then(function (snapshot) {
+        var theMemberList = snapshot.val()
+        console.log("theMemberList type")
+        console.log(typeof(theMemberList))
+        var newList = []
+        for(var i in theMemberList){
+          console.log("i:")
+          console.log(i)
+          if(theMemberList[i] != self.state.userKey){
+            newList.push(theMemberList[i])
+          }
+        }
+        groupRef.set(newList)
+        self.setState({memberList: newList})
+        self.setState({joined: false})
+      });
+
+      
+      });
+      
+    }
+
+  }
   render() {
     return (
       <header>
@@ -131,7 +228,7 @@ class Group extends React.Component {
             <div class="row group_row">
               <div class="col-md-4">
                 <img src={group_placeholder}/>
-                <input id="join_group" class="btn btn-info" type="button" value= "  Join Group  " onClick={this.buttonClicked.bind(this)}></input>
+                <input id="join_group" class="btn btn-info" type="button" value= {!this.state.joined ? "Join" : "Leave Group"} onClick={this.handleJoin}></input>
               </div>
               <div class="col-xs-4">
                 <h3>{this.state.group_name}</h3>
@@ -146,24 +243,18 @@ class Group extends React.Component {
               <div class="col-xs-4">
                 <div class="row">
                   <h3 class="py-4">Events</h3>
-                  <a class="btn btn-primary ml-auto my-auto" onClick = {this.goToCreateEvent.bind(this)}>Create Event</a>
+                  {<a class="btn btn-primary ml-auto my-auto" onClick = {this.goToCreateEvent}>Create Event</a>
+                  }
                 </div>
-                <div class="card group_card">
-                  <div class="card-body">
-                    <h5 class="card-title">Event Title</h5>
-                    <div class="card-text">
-                      <p>Event Details </p>
+                {/* SPLIT EVENT_LIST ARRAY INTO SEPARATE ITEMS */}
+                {Object.keys(this.state.eventList).slice(1,this.state.eventList.length).map((Key) => 
+                    
+                    <div>
+                    <Row>
+                    <EventCard content = {this.state.eventList[Key]} groupID = {window.location.pathname.split('/group/')[1]} index = {Key} currentUser = {this.state.userKey} />
+                    </Row>
                     </div>
-                    <div class="card-bottom">
-                      <img src="#" alt="profile_img"/>
-                      <form>
-                        <div class="text-right">
-                          <button id="join_event" class="btn btn-info" type="button" name="join_event">Join Event</button>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </div>
+                  )}
               </div>
               <div class="col-xs-4 offset-md-1">
                 <h3 class="py-4">Members</h3>
