@@ -31,24 +31,37 @@ class Profile extends Component{
           editing: false
         }
      this.handleEdit = this.handleEditButton.bind(this);
-     this.handleEditSubmit = this.handleEditSubmit.bind(this)
-     this.handleChange = this.handleChange.bind(this)
-     this.handleUpload = this.handleUpload.bind(this)
+     this.handleEditSubmit = this.handleEditSubmit.bind(this);
+     this.handleChange = this.handleChange.bind(this);
+     this.handleUpload = this.handleUpload.bind(this);
   }
   
   handleChange = event => {
     if (event.target.files[0]) {
-      /*const picture = event.target.files[0];
-      this.setState(() => ({picture}));*/
-      this.setState({
+      const picture = event.target.files[0];
+      this.setState(() => ({picture}));
+      /*this.setState({
         picture: event.target.files[0]
-      })
+      })*/
     }
   }
 
   handleUpload = () => {
-    //const {picture} = this.state;
-    var fileName = this.props.picture.name;
+    const {picture} = this.state;
+    const uploadTask = storage.ref(`profile_img/${picture.name}`).put(picture);
+    uploadTask.on('state_changed',
+      (snapshot) => {
+      },
+      (error) => {
+        console.log(error);
+      },
+      () => {
+        storage.ref('profile_img').child(picture.name).getDownloadURL().then(uniqueLink => {
+          console.log(uniqueLink);
+          this.setState({uniqueLink});
+        })
+      });
+    /*var fileName = this.props.picture.name;
     var storageRef = fire.storage().ref('/images/' + fileName);
 
     var uploadTask = storageRef.put(this.props.picture);
@@ -64,7 +77,7 @@ class Profile extends Component{
       var downloadURL = uploadTask.snapshot.downloadURL;  
       console.log(downloadURL)
       }
-    );
+    );*/
   }
 
   getData() {
@@ -210,7 +223,7 @@ class Profile extends Component{
                         <Row>
                           <Col></Col>
                           <Col>
-                          <input id = "profile_pic" type="file" class="file-select" accept="image/*" /*onChange={this.handleChange}*//>
+                          <input id = "profile_pic" type="file" class="file-select" accept="image/*" onChange={this.handleChange}/>
                           </Col>
                           <Col></Col>
 

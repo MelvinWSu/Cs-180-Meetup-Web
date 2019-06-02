@@ -17,6 +17,7 @@ import Account from './components/Account'
 import EditProfile from './components/EditProfile'
 import fire from './fire.js'
 import dynamicfieldpractice from './components/dynamicfield-practice'
+import UploadImage from './components/UploadImage'
 
 class App extends Component{
 
@@ -41,6 +42,7 @@ class App extends Component{
           <Route path = "/Account" component = {Account} />
           <Route path = "/EditProfile" component = {EditProfile} />
           <Route path = "/dyn" component = {dynamicfieldpractice} />
+          <Route path = "/UploadImage" component = {UploadImage} />
         </div>
       </Router>
 
