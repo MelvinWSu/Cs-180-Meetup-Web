@@ -88,10 +88,7 @@ class Group extends Component {
             memberListRef.once("value").then(function (snapshot) {
               
               var list = snapshot.val()
-              console.log("<<<<list>>>>")
-              console.log(list)
-              console.log("userKey")
-              console.log(self.state.userKey)
+             
               for( var i in list){
                 if (list[i] == self.state.userKey){
                   console.log("FOUND")
@@ -244,6 +241,8 @@ class Group extends Component {
                   }
                 </div>
                 {/* SPLIT EVENT_LIST ARRAY INTO SEPARATE ITEMS */}
+                {console.log("OUTPUTTING EVENTS")}
+                {console.log((this.state.eventList))}
                 {Object.keys(this.state.eventList).slice(1,this.state.eventList.length).map((Key) => 
                     
                     <div>
