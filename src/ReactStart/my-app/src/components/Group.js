@@ -379,14 +379,13 @@ class Group extends Component {
 
 async function saveMessage() {
   var date = new Date().getTime();
-  var str = new Date(date);
-  var mess = document.getElementById("groupdis_text").value.replace(/(?:\r\n|\r|\n)/g, '<br/>');
+  var str = new Date(date); 
   await auth.onAuthStateChanged(function(user){
     if (user) {
       fire.database().ref('groups/' + window.location.pathname.split('/group/')[1] + '/messages').push({
         name: user.email,
         timestamp: str.toString(),
-        message: mess
+        message: document.getElementById("groupdis_text").value
       });
     }
   })
@@ -411,7 +410,7 @@ function displayList() {
       <div>
         <p class = "card-text" key = {item.key}>
           <small class = "text-muted" >
-            <img src={group_placeholder} width="50" height = "50"/>
+            <img src={group_placeholder} class = "pr-1" width="50" height = "50"/>
             {item.email}
           </small>
         </p>
