@@ -245,6 +245,8 @@ class Mainpage extends Component {
 
             {console.log("Results_list")}
             {console.log(this.state.search_results)}
+            <Col></Col>
+            <Col>
             {Object.keys(this.state.search_results).slice(0,this.state.search_results.length).map((Key,item) => 
 
                     <div>
@@ -252,9 +254,13 @@ class Mainpage extends Component {
                     { this.state.results_option == "Group" ? <GroupCard item = {Key} /> :
                                                       <EventCard index = {Key} content = {this.state.search_results[Key]} /> }
                     </Row>
+                    <br></br>
+                    <br/>
+                    <br></br>
                     </div>
                   )} 
-           
+           </Col>
+           <Col></Col>
             
           </div>
         </main>

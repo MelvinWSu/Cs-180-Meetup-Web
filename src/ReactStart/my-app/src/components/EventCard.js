@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Router, Route, Link, browserHistory, IndexRoute  } from 'react-router'
 import fire,{auth, provider} from '../fire';
-import {Card, Button, Nav, Row, Col, Container, Modal} from 'react-bootstrap'
+import {Card, Button, Nav, Row, Col, Container, Modal, Carousel} from 'react-bootstrap'
 import PeopleCard from './PeopleCard'
 import './style.css';
 
@@ -20,7 +20,8 @@ export default class EventCard extends Component {
             permission: false,
 
 
-            currentMemberList : []
+            currentMemberList : [],
+            editing : this.props.editing
         }
 
         console.log("start states")
@@ -38,7 +39,6 @@ export default class EventCard extends Component {
         auth.onAuthStateChanged(function(user){
             console.log('onAuthStateChange')
             if (user){
-                console.log("user")
                 self.setState({currentUser: user})
 
             
@@ -58,10 +58,7 @@ export default class EventCard extends Component {
                     
                     var list = snapshot.val();
                     self.setState({currentMemberList: list})
-                    console.log("<<<<list>>>>")
-                    console.log(list)
-                    console.log("userKey")
-                    console.log(self.state.userKey)
+                   
                     for( var i in list){
                         if (list[i] == self.state.userKey){
                         console.log("FOUND")
@@ -154,7 +151,7 @@ export default class EventCard extends Component {
                 <Card.Title class = "mt-2 font-weight-bold"> {this.state.content['event_name']}</Card.Title>
                     </div>
                     <div class = "col">
-                        {this.state.permission ? <button class = "mx-1" type = "button" class= "close" aria-label= "Close" onClick = {this.handleDelete} disabled = {this.state.permission ?  "hidden" : "visible"}>
+                        {this.state.permission ? <button class = "mx-1" type = "button" class= "close" aria-label= "Close" onClick = {this.handleDelete}>
                             <span aria-hidden="true">&times;</span>
                         </button> : null}
                     </div>
@@ -162,19 +159,30 @@ export default class EventCard extends Component {
                 <Card.Body>
                     {this.state.content.time}
                     <br/>
-                    {this.state.content['desc']}
+                    <br></br>
+                    
+                    <Row>
+                        <Col></Col>
+                        <Col>Attendees: {this.state.currentMemberList.length-1} </Col>
+                        <Col></Col>
+                    </Row>
+                    <Row>
+                    <Col></Col>
+                    <Col>
+                    <Carousel indicators = {false}>
+                    {this.state.currentMemberList.slice(1,this.state.currentMemberList.length).map((item,key) =>
+                            
+                        <Carousel.Item><PeopleCard userKey = {item} /></Carousel.Item>
+                        
+                    )}
+                    </Carousel>
+                    </Col>
+                    <Col></Col>
+                    </Row>
                 </Card.Body>
                 <Card.Footer>
                     <Col>
                     <Button onClick = {this.handleJoin}>{!this.state.joined ? "+RSVP" : "-Leave" }</Button>
-                    </Col>
-                    <Col>
-                    {this.state.currentMemberList.slice(1,this.state.currentMemberList.length).map((item,key) =>
-            
-                        <Row>
-                        <PeopleCard userKey = {item} />
-                        </Row>
-                    )}
                     </Col>
                 </Card.Footer>
             </Card>
