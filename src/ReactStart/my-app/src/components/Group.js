@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
 import './style.css';
 import { Button } from 'react-bootstrap';
-import { Nav, Navbar, NavItem } from 'react-bootstrap';
+import { Nav, Form, Navbar, NavItem } from 'react-bootstrap';
 import { Carousel, Row, Col } from 'react-bootstrap';
 import img_placeholder from './pics/img_placeholder.png';
 import group_placeholder from './pics/group_placeholder.png';
 import fire, {auth} from '../fire';
 import EventCard from './EventCard';
+import {storage} from '../fire';
 
 class Group extends Component {
   constructor(props) {
@@ -16,19 +17,55 @@ class Group extends Component {
     this.state = {
       group_name: "loading...",
       group_bio: "loading...",
+      picture: null,
+      uniqueLink: '',
       values: [],
       joined : false,
+      listOfPositions: [],
       eventList: [],
       memberList: [],
       userKey : null,
-      currentUser : null
+      currentUser : null,
+      editing: false,
+      permission: false
      }
     //this.joined = false;
 
     this.handleJoin = this.handleJoinGroup.bind(this)
-    
+    this.handleEditSubmit = this.handleEditSubmit.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+    this.handleUpload = this.handleUpload.bind(this)
   }
   
+  handleChange = event => {
+    if (event.target.files[0]) {
+      const picture = event.target.files[0];
+      this.setState(() => ({picture}));
+    }
+  }
+
+  handleUpload = () => {
+    const {picture} = this.state;
+    const uploadTask = storage.ref(`group_img/${picture.name}`).put(picture);
+    uploadTask.on('state_changed',
+      (snapshot) => {
+      },
+      (error) => {
+        console.log(error);
+      },
+      () => {
+        storage.ref('group_img').child(picture.name).getDownloadURL().then(uniqueLink => {
+          console.log(uniqueLink);
+          this.setState({uniqueLink});
+          
+          let getKey = window.location.pathname.split('/group/')[1]
+          fire.database().ref("groups/" + getKey).update({
+            photo: this.state.uniqueLink
+          });
+        })
+      });
+  }
+
   getData() {
     console.log("getData")
     setTimeout(() => {
@@ -37,17 +74,13 @@ class Group extends Component {
       usersRef.once("value").then(function (snapshot) {
         self.setState({
           group_name: snapshot.val().group_name,
-          group_bio: snapshot.val().bio,
+          group_bio: snapshot.val().group_bio,
           eventList: snapshot.val().event_list,
-          memberList : snapshot.val().member_list
+          memberList : snapshot.val().member_list,
+          uniqueLink: snapshot.val().photo
         })
-
-        
         console.log("updated State")
         console.log(self.state)
-
-
-
       });
     }, 100)
   }
@@ -57,8 +90,27 @@ class Group extends Component {
     event.preventDefault();
   }
 
-  componentDidMount() {
+  handleEditButton = () => {
 
+    console.log("current states:")
+    console.log(this.state)
+    setTimeout( () => {
+      var self = this;
+      
+      if (self.state.editing == false){
+        self.setState({
+          editing : true
+        })  
+      }
+      else{
+        self.setState({
+          editing:false
+        })
+      }
+    })
+  }  
+
+  componentDidMount() {
     
     console.log("componentDidMount")
     console.log("initial state:")
@@ -71,7 +123,7 @@ class Group extends Component {
       if(user){
         console.log("user is logged on ")
         console.log(user)
-      
+        
         self.setState( {
           currentUser: user,
         })
@@ -79,8 +131,8 @@ class Group extends Component {
         var ref = fire.database().ref("users");
         ref.orderByChild("email").equalTo(self.state.currentUser.email).on("value", function(snapshot){
           snapshot.forEach(function(data) {
-  
-            self.setState({userKey: data.key})
+             
+            self.setState({userKey: data.key, permissions: true})
             
             var groups = data.child("groups");
 
@@ -88,10 +140,7 @@ class Group extends Component {
             memberListRef.once("value").then(function (snapshot) {
               
               var list = snapshot.val()
-              console.log("<<<<list>>>>")
-              console.log(list)
-              console.log("userKey")
-              console.log(self.state.userKey)
+             
               for( var i in list){
                 if (list[i] == self.state.userKey){
                   console.log("FOUND")
@@ -118,8 +167,8 @@ class Group extends Component {
       
   }
 
-  handleJoinGroup = () => {
-
+  handleJoinGroup = (event) => {
+    event.preventDefault();
     console.log("handle join")
 
     if (!this.state.joined){
@@ -133,27 +182,24 @@ class Group extends Component {
       console.log("userRef")
       console.log(userRef)
       userRef.once("value").then(function (snapshot) {
-        
-          var groupList = snapshot.val()
-          groupList.push(window.location.pathname.split('/group/')[1])
-          userRef.update(groupList)
+        var groupList = snapshot.val()
+        groupList.push(window.location.pathname.split('/group/')[1])
+        userRef.update(groupList)
       });
       var groupRef = fire.database().ref("groups/" + window.location.pathname.split('/group/')[1] + "/member_list")
-      groupRef.push([self.state.userKey])
-      groupRef.once("value").then(function (snapshot) {
-        
-        self.setState({memberList: snapshot.val()})
-    });
+      groupRef.once("value").then(function(snapshot) {
+        var mem_list  = snapshot.val()
+        mem_list.push(self.state.userKey)
+        groupRef.update(mem_list)
+      })
+      
+      });
       console.log("pushed user in member_list");
       console.log("after push state")
       console.log(self.state)
-      
-      });
-    
-
     }
+    
     else{
-
       var self = this;
 
       //delete group in user database
@@ -162,10 +208,10 @@ class Group extends Component {
       
       var userRef = fire.database().ref("users/" + self.state.userKey + "/groups");
       userRef.once("value").then(function (snapshot) {
-        
           var groupList = snapshot.val()
           console.log("IN GROUPLIST DELETION")
           console.log(groupList)
+          console.log(snapshot.numChildren())
           for(var i = 0; i < groupList.length ; i++){
             if(groupList[i] == window.location.pathname.split('/group/')[1]){
               console.log("deleting in GroupList ")
@@ -192,14 +238,67 @@ class Group extends Component {
         groupRef.set(newList)
         self.setState({memberList: newList})
         self.setState({joined: false})
-      });
-
-      
-      });
-      
+        });
+      }); 
     }
-
+    
   }
+  handleEditSubmit = () => {
+    var new_group_name = document.getElementById("group_edit_name").value;
+    var new_group_bio = document.getElementById("group_edit_bio").value;
+
+    var getKey = window.location.pathname.split('/group/')[1]
+
+    fire.database().ref("groups/" + getKey).update({
+      group_name: new_group_name,
+      group_bio: new_group_bio,
+    });
+
+    this.handleUpload()
+    var self = this
+
+    self.setState({
+      group_name: new_group_name,
+      group_bio: new_group_bio,
+      editing : false
+    })
+  }
+
+  handleEditRender(props){
+    return (
+      <div class="col-xs-4">
+        <input type="file" accept="image/*" onChange={props.change} />
+        <h3>Group Name</h3>
+        <div className="form-group">
+          <input id = "group_edit_name" type="text" defaultValue={props.group_name} placeholder = "Group Name" required/>
+        </div>
+        <p>Group Bio</p>
+        <div className="form-group">
+          <Form.Control id = "group_edit_bio" as="textarea" rows="3" defaultValue={props.group_bio} placeholder = "Group Biography" />
+        </div>
+        <Button onClick = {props.submit}> Submit </Button>
+      </div>
+    )
+  }
+  handleViewRender(props){
+    return (
+      <div class="col-xs-4">
+        <h3>{props.group_name}</h3>
+        <p>{props.group_bio}</p>
+      </div>
+    )
+  }
+
+  changeProfileLinking(props) {
+  
+    var temp = "/profile/user/" + props.userKey;
+    return (
+      <NavItem className="ml-auto">
+        <Nav.Link id="profile_linking" href={temp}>Profile</Nav.Link>
+      </NavItem>
+    )
+  }
+
   render() {
     return (
       <header>
@@ -208,9 +307,9 @@ class Group extends Component {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse>
             <Nav className="ml-auto">
-              <NavItem className="ml-auto">
-                <Nav.Link href="./profile">Profile</Nav.Link>
-              </NavItem>
+              <this.changeProfileLinking
+                userKey = {this.state.userKey}
+              />
               <NavItem className="ml-auto">
                 <Nav.Link className="ml-auto" href="/create_group">Create Group</Nav.Link>
               </NavItem>
@@ -221,15 +320,32 @@ class Group extends Component {
           </Navbar.Collapse>
         </Navbar>
         <main>
+          <div class = "row justify-content-md-center">
           <div class="container">
             <div class="row group_row">
               <div class="col-md-4">
-                <img src={group_placeholder}/>
-                <input id="join_group" class="btn btn-info" type="button" value= {!this.state.joined ? "Join" : "Leave Group"} onClick={this.handleJoin}></input>
+                <img src={this.state.uniqueLink || group_placeholder} height="300" width="300"/>
+                <div class="col-md-12">
+                  <input id="join_group" class="btn btn-info" type="button" value= {!this.state.joined ? "Join" : "Leave Group"} onClick={this.handleJoin}></input>
+                  <Button variant = {this.state.permissions ? "primary" : "outline-light"} disabled = {!this.state.permissions} onClick = {this.handleEditButton}> {this.state.editing ? 'Cancel Edit' : 'Edit' }</Button>
+                </div>
               </div>
-              <div class="col-xs-4">
-                <h3>{this.state.group_name}</h3>
-                <p>{this.state.group_bio}</p>
+              <div class="col-md-4">
+                {this.state.editing ? 
+                <this.handleEditRender 
+                  group_name = {this.state.group_name}
+                  group_bio = {this.state.group_bio}
+                  submit = {this.handleEditSubmit}
+                  change = {this.handleChange}
+                  uniqueLink = {this.state.uniqueLink}
+                />
+                :
+                <this.handleViewRender
+                  group_name = {this.state.group_name}
+                  group_bio = {this.state.group_bio}
+                  uniqueLink = {this.state.uniqueLink}
+                />
+                }
               </div>
             </div>
             <div>
@@ -237,21 +353,19 @@ class Group extends Component {
           </div> 
           <div class="container">
             <div class="row group_row">
-              <div class="col-xs-4">
+              <div class="col-xs-6">
                 <div class="row">
-                  <h3 class="py-4">Events</h3>
+                  <h3 class="py-4 mr-4" >Events</h3>
                   {<a class="btn btn-primary ml-auto my-auto" onClick = {this.goToCreateEvent}>Create Event</a>
                   }
                 </div>
-                {/* SPLIT EVENT_LIST ARRAY INTO SEPARATE ITEMS */}
-                {Object.keys(this.state.eventList).slice(1,this.state.eventList.length).map((Key) => 
-                    
-                    <div>
+                {Object.keys(this.state.eventList).slice(1,this.state.eventList.length).map((Key) =>
+                  <div>
                     <Row>
-                    <EventCard content = {this.state.eventList[Key]} groupID = {window.location.pathname.split('/group/')[1]} index = {Key} currentUser = {this.state.userKey} />
+                      <EventCard content = {this.state.eventList[Key]} groupID = {window.location.pathname.split('/group/')[1]} index = {Key} currentUser = {this.state.userKey} />
                     </Row>
-                    </div>
-                  )}
+                  </div>
+                )}
               </div>
               <div class="col-xs-4 offset-md-1">
                 <h3 class="py-4">Members</h3>
@@ -281,22 +395,79 @@ class Group extends Component {
               <h3>Discussion</h3>
             </div>
             <div class="row">
-            <div class="col-xs-4">
-              <form action="#" method="get">
-                <div class="form-group">
-                  <textarea id="groupdis_text" class="form-control dis_card" type="text" rows="4" placeholder="Enter your message here" name="groupdis_text" required></textarea>
-                  <div class="text-right">
-                    <button id="submit_message" class="btn btn-primary" type="button">Enter message</button>
-                  </div>
+            <div class = "col-sm-12">
+              <div class= "card">
+                <div class = "card-body text-left scroll">
+                  {displayList()} 
+                  <div class="form-group">
+                    <textarea id="groupdis_text" class="form-control dis_card" type="text" rows="4" placeholder="Enter your message here" name="groupdis_text" required></textarea>
+                    <div class="text-right">
+                      <button id="submit_message" class="btn btn-primary" onClick = {saveMessage}>Enter message</button>
+                    </div>
+                  </div>                 
                 </div>
-              </form>
+              </div>
             </div>
             </div>
           </div> 
+          </div>
         </main>
       </header>
     );
   }
+}
+
+async function saveMessage() {
+  var date = new Date().getTime();
+  var str = new Date(date); 
+  await auth.onAuthStateChanged(function(user){
+    if (user) {
+      fire.database().ref('groups/' + window.location.pathname.split('/group/')[1] + '/messages').push({
+        name: user.email,
+        timestamp: str.toString(),
+        message: document.getElementById("groupdis_text").value
+      });
+    }
+  })
+  document.location.reload();
+}
+
+function displayList() {
+  var message_list = [];
+  var ref = fire.database().ref('groups/' + window.location.pathname.split('/group/')[1] + "/messages");
+  ref.orderByKey().on("value", function(snapshot){
+    snapshot.forEach(function(data){
+      message_list.push({
+        email: data.val().name,
+        message: data.val().message,
+        time: data.val().timestamp,
+        key: data.key
+      });
+    })
+  })
+  return message_list.map(item => {
+    return (
+      <div>
+        <p class = "card-text" key = {item.key}>
+          <small class = "text-muted" >
+            <img src={group_placeholder} class = "pr-1" width="50" height = "50"/>
+            {item.email}
+          </small>
+        </p>
+        <p class = "card-text" key={item.key}>
+          <pre>
+            {item.message}
+          </pre>
+        </p>
+        <p class = "card-text" key = {item.key}>
+          <small class= "text-muted">
+            {item.time}
+          </small>
+        </p>
+        <hr></hr>
+      </div>
+    );
+  });
 }
 
 export default Group;

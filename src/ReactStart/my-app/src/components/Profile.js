@@ -228,12 +228,12 @@ class Profile extends Component{
                 <div class="row py-2">
                   <label class="pr-2"><strong>First Name:</strong></label>
                   <div className="form-group">
-                      <input id = "profile_firstname" type="text" placeholder="First Name" name="e_mail" required/>
+                      <input id = "profile_firstname" type="text" defaultValue = {props.first_name} placeholder="First Name" name="e_mail" required/>
                   </div>
                 </div>
                 <div class="row py-2">
                   <label class="pr-2"><strong>Last Name:</strong></label>
-                    <input id = "profile_lastname" type="text" placeholder="Last Name" required/>
+                    <input id = "profile_lastname" type="text"  defaultValue = {props.last_name} placeholder="Last Name" required/>
                 </div>
                 <div class="row py-2">
                   <label class="pr-2"><strong>E-mail:</strong></label>
@@ -245,7 +245,7 @@ class Profile extends Component{
           </div>
           <div class="container mt-4 py-4">
             <p class="py-2 profile_text"><strong>About Me:</strong></p>
-            <Form.Control id = "profile_bio" as="textarea" rows="3" />
+            <Form.Control id = "profile_bio" as="textarea"  defaultValue = {props.bio} placeholder = "About Me" rows="3" />
           </div>
       </div>
     );
@@ -285,7 +285,9 @@ class Profile extends Component{
           </div>
           <div class="container mt-4 py-4">
             <p class="py-2 profile_text"><strong>About Me:</strong></p>
-            {props.bio}
+            <pre>
+              {props.bio}
+            </pre>
           </div>
           
           
