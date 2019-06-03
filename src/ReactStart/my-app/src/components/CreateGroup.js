@@ -36,6 +36,7 @@ class CreateGroup extends Component {
           snapshot.forEach(function(data) {
             console.log(data.key);
             self.state.leader = data.key
+            self.state.member_list = [data.key]
           })
         })
       }
