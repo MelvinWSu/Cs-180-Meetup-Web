@@ -44,7 +44,11 @@ class Profile extends Component{
   }
 
   handleUpload = () => {
-    const {picture} = this.state;
+    if (this.state.uniqueLink == null) {
+
+    }
+    else {
+      const {picture} = this.state;
     const uploadTask = storage.ref(`profile_img/${picture.name}`).put(picture);
     uploadTask.on('state_changed',
       (snapshot) => {
@@ -63,6 +67,8 @@ class Profile extends Component{
           });
         })
       });
+    }
+    
   }
 
   getData() {
@@ -204,7 +210,7 @@ class Profile extends Component{
           <div class="container mt-4 py-4">
             <div class="row">
               <div class="col-md-4 px-4">
-              <img src={props.uniqueLink || "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG/220px-Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG"} height = "300" width = "300" id="profile_img"/>   
+              <img src={props.uniqueLink || "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG/220px-Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG"} height = "300" width = "300" id="profile_img" style = {{"border-radius" : "50%"}}/>   
                 <div class="card border-0">
 
                   <div class="card-head">
@@ -213,7 +219,7 @@ class Profile extends Component{
                         <Row>
                           <Col></Col>
                           <Col>
-                          <input id="profile_pic" type="file" class="file-select" accept="image/*" onChange={props.change}/>
+                          <input id="profile_pic" type="file" class="file-select" accept="image/*" onChange={props.change} />
                           </Col>
                           <Col></Col>
 
@@ -245,7 +251,7 @@ class Profile extends Component{
           </div>
           <div class="container mt-4 py-4">
             <p class="py-2 profile_text"><strong>About Me:</strong></p>
-            <Form.Control id = "profile_bio" as="textarea"  defaultValue = {props.bio} placeholder = "About Me" rows="3" />
+            <Form.Control id = "profile_bio" as="textarea" defaultValue = {props.bio} placeholder = "About Me" rows="3" />
           </div>
       </div>
     );
@@ -258,7 +264,7 @@ class Profile extends Component{
           <div class="container mt-4 py-4">
             <div class="row">
               <div class="col-md-4 px-4">
-              <img src={props.uniqueLink || "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG/220px-Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG"} height = "300" width = "300" id="profile_img" />   
+              <img src={props.uniqueLink || "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG/220px-Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG"} height = "300" width = "300" id="profile_img" style = {{"border-radius" : "50%"}} />   
                                     
                 <div class="card border-0">
                   <div class="card-head">
@@ -338,9 +344,9 @@ class Profile extends Component{
       
       <Row>
       <Col></Col>
-      <Col xs = {8}>
+      <Col>
       <Carousel style = {{"background-color" : "white"}}>
-        
+  
         {this.state.groups.slice(1,this.state.groups.length).map((item,key) =>
           
           <Carousel.Item>

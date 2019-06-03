@@ -377,13 +377,18 @@ class Group extends Component {
                   <h3 class="py-4">Events</h3>
                   <a class="btn btn-primary m-4" onClick = {this.goToCreateEvent}>Create Event</a>
                 </div>
+                <Row>
+                  
                 {Object.keys(this.state.eventList).slice(1,this.state.eventList.length).map((Key) =>
                   <div>
                     <Row>
-                      <EventCard content = {this.state.eventList[Key]} groupID = {window.location.pathname.split('/group/')[1]} index = {Key} currentUser = {this.state.userKey} />
+                      <EventCard content = {this.state.eventList[Key]} groupID = {window.location.pathname.split('/group/')[1]} index = {Key} currentUser = {this.state.userKey}/>
                     </Row>
                   </div>
                 )}
+                
+                </Row>
+
               </div>
               <div class="col-xs-4 offset-md-1">
                 <h3 class="py-4">Members</h3>
@@ -400,11 +405,15 @@ class Group extends Component {
                     {console.log("PRINT MEMBERS LIST")}
                     {console.log(this.state.memberList)}
                     {this.state.memberList.slice(1,this.state.memberList.length).map((item,key) =>
-            
-                          <Row>
-                            <PeopleCard userKey = {item} />
-                          </Row>
-                      )}
+                    <div class = "row">
+                      <div class = "mx-auto">
+                        <Row class = "">
+                          <PeopleCard userKey = {item} />
+                        </Row>
+                      </div>
+                    </div>
+                      
+                    )}
                   </div>
                 </div>
               </div>

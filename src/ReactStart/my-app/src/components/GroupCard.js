@@ -48,27 +48,30 @@ export default class  GroupCard extends Component{
 
     render(){
         return(
-        <Container>
-        <Row>
+            
+            <Row>
             <Col></Col>
             <Col>
             <Card border = "primary" text = "dark" variant = 'light' style = {{width: '300px'}}>
             <Card.Header>{this.state.groupName}</Card.Header>
-            <Card.Img src={this.state.groupPhoto} style = {{height: '300px', width: '300px', "maxWidth" : '300px', "maxHeight": '300px', opacity: '0.25'}}  />
+            <Card.Img src={this.state.groupPhoto} style = {{height: '300px', width: '300px', "maxWidth" : '300px', "maxHeight": '300px', opacity: '0.5'}}  />
             <Card.ImgOverlay>
             <Card.Body>
-                <Card.Text className="justify-content-center" style={{width: '200px'}}>
+                <Col></Col>
+                <Col>
+                <Card.Text>
                 <br/>
                 {this.state.groupBio}                
                 </Card.Text>
+                </Col>
+                <Col></Col>
                 <Nav.Link onClick = {this.handleClick}>Go to Page</Nav.Link>  
             </Card.Body>
             </Card.ImgOverlay>
             </Card>
             </Col>
             <Col></Col>
-        </Row>
-        </Container>
+            </Row>
         )
     }
 }
