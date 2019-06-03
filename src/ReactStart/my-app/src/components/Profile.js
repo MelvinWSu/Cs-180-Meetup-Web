@@ -320,9 +320,4 @@ class Profile extends Component{
     )
   }
 }
-
-function uploadImage() {
-
-};
-
 export default Profile

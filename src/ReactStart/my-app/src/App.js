@@ -17,6 +17,7 @@ import Account from './components/Account'
 import EditProfile from './components/EditProfile'
 import fire from './fire.js'
 import dynamicfieldpractice from './components/dynamicfield-practice'
+import PeopleCard from './components/PeopleCard'
 
 class App extends Component{
 

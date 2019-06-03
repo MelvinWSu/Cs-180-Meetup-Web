@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { Router, Route, Link, browserHistory, IndexRoute  } from 'react-router'
 import fire,{auth, provider} from '../fire';
 import {Card, Button, Nav, Row, Col, Container, Modal} from 'react-bootstrap'
+import PeopleCard from './PeopleCard'
 import './style.css';
 
 
@@ -15,7 +16,9 @@ export default class EventCard extends Component {
 
             content: this.props.content,
             index : this.props.index,
-            joined: false
+            joined: false,
+
+            currentMemberList : []
         }
 
         console.log("start states")
@@ -138,7 +141,17 @@ export default class EventCard extends Component {
                     {this.state.content['desc']}
                 </Card.Body>
                 <Card.Footer>
+                    <Col>
                     <Button onClick = {this.handleJoin}>{!this.state.joined ? "+RSVP" : "-Leave" }</Button>
+                    </Col>
+                    <Col>
+                    {this.state.currentMemberList.slice(1,this.state.currentMemberList.length).map((item,key) =>
+            
+                        <Row>
+                        <PeopleCard userKey = {item} />
+                        </Row>
+                    )}
+                    </Col>
                 </Card.Footer>
             </Card>
             </div>

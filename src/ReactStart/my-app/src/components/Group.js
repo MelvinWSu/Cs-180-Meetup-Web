@@ -7,6 +7,7 @@ import img_placeholder from './pics/img_placeholder.png';
 import group_placeholder from './pics/group_placeholder.png';
 import fire, {auth} from '../fire';
 import EventCard from './EventCard';
+import PeopleCard from './PeopleCard';
 
 class Group extends Component {
   constructor(props) {
@@ -32,22 +33,26 @@ class Group extends Component {
     this.handleEditSubmit = this.handleEditSubmit.bind(this)
   }
   
-  getData() {
+  async getData() {
     console.log("getData")
-    setTimeout(() => {
-      var self = this;
+    var self = this;
+
+    await setTimeout(() => {
       var usersRef = fire.database().ref("groups/" + window.location.pathname.split('/group/')[1]);
       usersRef.once("value").then(function (snapshot) {
         self.setState({
           group_name: snapshot.val().group_name,
           group_bio: snapshot.val().group_bio,
           eventList: snapshot.val().event_list,
-          memberList : snapshot.val().member_list
+          memberList : snapshot.val().member_list,
+          organizer : snapshot.val().leader
         })
         console.log("updated State")
         console.log(self.state)
       });
     }, 100)
+
+    this.setState(self)
   }
 
   goToCreateEvent = (event) => {    
@@ -75,7 +80,7 @@ class Group extends Component {
     })
   }  
 
-  componentDidMount() {
+  async componentDidMount() {
     
     console.log("componentDidMount")
     console.log("initial state:")
@@ -83,7 +88,7 @@ class Group extends Component {
     var self = this
     
     console.log("onAuthStateChanged")  
-    auth.onAuthStateChanged(function (user) {
+    await auth.onAuthStateChanged(function (user) {
       
       if(user){
         console.log("user is logged on ")
@@ -128,7 +133,7 @@ class Group extends Component {
       
     });
 
-    self.getData()
+    await this.getData()
       
   }
 
@@ -233,11 +238,11 @@ class Group extends Component {
       <div class="col-xs-4">
         <h3>Group Name</h3>
         <div className="form-group">
-          <input id = "group_edit_name" type="text" placeholder={props.group_name} required/>
+          <input id = "group_edit_name" type="text" required/>
         </div>
         <p>Group Bio</p>
         <div className="form-group">
-          <Form.Control id = "group_edit_bio" as="textarea" rows="3" placeholder={props.group_bio} />
+          <Form.Control id = "group_edit_bio" as="textarea" rows="3" />
         </div>
         <Button onClick = {props.submit}> Submit </Button>
       </div>
@@ -330,19 +335,21 @@ class Group extends Component {
                 <div class="card member_card">
                   <div class="card-body">
                     <h5 class="card-title">Organizer</h5>
-                    <div class="card-img">
-                      <img src="#" alt="member_image"/>
-                    </div>
+                    {console.log("organizer" + this.state.organizer)}
+                    {this.state.organizer ? <PeopleCard userKey = {this.state.organizer} /> : null }
                   </div>
                 </div>
                 <div class="card member_card">
                   <div class="card-body">
                     <h5 class="card-title">Members</h5>
-                    <div class="card-img">
-                      <img src="#" alt="member_image"/>
-                      <img src="#" alt="member_image"/>
-                      <img src="#" alt="member_image"/>
-                    </div>
+                    {console.log("PRINT MEMBERS LIST")}
+                    {console.log(this.state.memberList)}
+                    {this.state.memberList.slice(1,this.state.memberList.length).map((item,key) =>
+            
+                          <Row>
+                            <PeopleCard userKey = {item} />
+                          </Row>
+                      )}
                   </div>
                 </div>
               </div>
