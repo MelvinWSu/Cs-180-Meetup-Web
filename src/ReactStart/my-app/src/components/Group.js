@@ -233,11 +233,11 @@ class Group extends Component {
       <div class="col-xs-4">
         <h3>Group Name</h3>
         <div className="form-group">
-          <input id = "group_edit_name" type="text" placeholder={props.group_name} required/>
+          <input id = "group_edit_name" type="text" defaultValue={props.group_name} placeholder = "Group Name" required/>
         </div>
         <p>Group Bio</p>
         <div className="form-group">
-          <Form.Control id = "group_edit_bio" as="textarea" rows="3" placeholder={props.group_bio} />
+          <Form.Control id = "group_edit_bio" as="textarea" rows="3" defaultValue={props.group_bio} placeholder = "Group Biography" />
         </div>
         <Button onClick = {props.submit}> Submit </Button>
       </div>
