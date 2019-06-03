@@ -44,7 +44,11 @@ class Profile extends Component{
   }
 
   handleUpload = () => {
-    const {picture} = this.state;
+    if (this.uniqueLink == null) {
+
+    }
+    else {
+      const {picture} = this.state;
     const uploadTask = storage.ref(`profile_img/${picture.name}`).put(picture);
     uploadTask.on('state_changed',
       (snapshot) => {
@@ -63,6 +67,8 @@ class Profile extends Component{
           });
         })
       });
+    }
+    
   }
 
   getData() {
@@ -213,7 +219,7 @@ class Profile extends Component{
                         <Row>
                           <Col></Col>
                           <Col>
-                          <input id="profile_pic" type="file" class="file-select" accept="image/*" onChange={props.change}/>
+                          <input id="profile_pic" type="file" class="file-select" accept="image/*" onChange={props.change} />
                           </Col>
                           <Col></Col>
 
