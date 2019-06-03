@@ -255,11 +255,12 @@ class Group extends Component {
     )
   }
 
-  changeProfileLinking() {
-    
+  changeProfileLinking(props) {
+  
+    var temp = "/profile/user/" + props.userKey;
     return (
       <NavItem className="ml-auto">
-        <Nav.Link id="profile_linking" href="#">Profile</Nav.Link>
+        <Nav.Link id="profile_linking" href={temp}>Profile</Nav.Link>
       </NavItem>
     )
   }
@@ -272,7 +273,9 @@ class Group extends Component {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse>
             <Nav className="ml-auto">
-              <this.changeProfileLinking></this.changeProfileLinking>
+              <this.changeProfileLinking
+                userKey = {this.state.userKey}
+              />
               <NavItem className="ml-auto">
                 <Nav.Link className="ml-auto" href="/create_group">Create Group</Nav.Link>
               </NavItem>
@@ -319,8 +322,7 @@ class Group extends Component {
                   {<a class="btn btn-primary ml-auto my-auto" onClick = {this.goToCreateEvent}>Create Event</a>
                   }
                 </div>
-                
-                {Object.keys(this.state.eventList).slice(1,this.state.eventList.length).map((Key) =>     
+                {Object.keys(this.state.eventList).slice(1,this.state.eventList.length).map((Key) =>
                   <div>
                     <Row>
                       <EventCard content = {this.state.eventList[Key]} groupID = {window.location.pathname.split('/group/')[1]} index = {Key} currentUser = {this.state.userKey} />
