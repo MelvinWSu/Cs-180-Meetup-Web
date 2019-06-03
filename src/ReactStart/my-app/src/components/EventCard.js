@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { Router, Route, Link, browserHistory, IndexRoute  } from 'react-router'
 import fire,{auth, provider} from '../fire';
 import {Card, Button, Nav, Row, Col, Container, Modal} from 'react-bootstrap'
+import PeopleCard from './PeopleCard'
 import './style.css';
 
 
@@ -16,7 +17,8 @@ export default class EventCard extends Component {
             content: this.props.content,
             index : this.props.index,
             joined: false,
-            visible: true
+
+            currentMemberList : []
         }
 
         console.log("start states")
@@ -138,34 +140,27 @@ export default class EventCard extends Component {
     render(){
         return(
             <div>
-                {this.state.visible ?
-                    <div>
-                    <Card style = {{width : "400px", "maxWidth" : '400px'}}>
-                        <div class = "row">
-                            <div class="col"></div>
-                            <div class="col-6">
-                                <Card.Title class = "mt-2 font-weight-bold"> {this.state.content['event_name']}</Card.Title>
-                            </div>
-                            <div class= "col">
-                                <button class = "mx-1" type = "button" class= "close" aria-label= "Close" onClick = {this.handleDelete}>
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        </div>
-                        <Card.Body>
-                            {this.state.content.time}
-                            <br/>
-                            {this.state.content['desc']}
-                        </Card.Body>
-                        <Card.Footer>
-                            <Button onClick = {this.handleJoin}>{!this.state.joined ? "+RSVP" : "-Leave" }</Button>
-
-                        </Card.Footer>
-                    </Card>
-                </div>
-                :
-                <div/>
-                }
+            <Card style = {{width : "400px", "maxWidth" : '400px'}}>
+                <Card.Title> {this.state.content['event_name']}</Card.Title>
+                <Card.Body>
+                    {this.state.content.time}
+                    <br/>
+                    {this.state.content['desc']}
+                </Card.Body>
+                <Card.Footer>
+                    <Col>
+                    <Button onClick = {this.handleJoin}>{!this.state.joined ? "+RSVP" : "-Leave" }</Button>
+                    </Col>
+                    <Col>
+                    {this.state.currentMemberList.slice(1,this.state.currentMemberList.length).map((item,key) =>
+            
+                        <Row>
+                        <PeopleCard userKey = {item} />
+                        </Row>
+                    )}
+                    </Col>
+                </Card.Footer>
+            </Card>
             </div>
         )
     }

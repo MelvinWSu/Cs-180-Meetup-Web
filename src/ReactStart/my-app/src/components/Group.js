@@ -8,6 +8,7 @@ import group_placeholder from './pics/group_placeholder.png';
 import fire, {auth} from '../fire';
 import EventCard from './EventCard';
 import Logout from './Logout';
+import PeopleCard from './PeopleCard';
 
 class Group extends Component {
   constructor(props) {
@@ -35,10 +36,11 @@ class Group extends Component {
     this.handleEditSubmit = this.handleEditSubmit.bind(this)
   }
   
-  getData() {
+  async getData() {
     console.log("getData")
-    setTimeout(() => {
-      var self = this;
+    var self = this;
+
+    await setTimeout(() => {
       var usersRef = fire.database().ref("groups/" + window.location.pathname.split('/group/')[1]);
       usersRef.once("value").then(function (snapshot) {
         self.setState({
@@ -46,12 +48,15 @@ class Group extends Component {
           group_bio: snapshot.val().group_bio,
           leader: snapshot.val().leader,
           eventList: snapshot.val().event_list,
-          memberList : snapshot.val().member_list
+          memberList : snapshot.val().member_list,
+          organizer : snapshot.val().leader
         })
         console.log("updated State")
         console.log(self.state)
       });
     }, 100)
+
+    this.setState(self)
   }
 
   goToCreateEvent = (event) => {    
@@ -79,14 +84,15 @@ class Group extends Component {
     })
   }  
 
-  componentDidMount() {  
+  async componentDidMount() {
+    
     console.log("componentDidMount")
     console.log("initial state:")
     console.log(this.state)
     var self = this
     
     console.log("onAuthStateChanged")  
-    auth.onAuthStateChanged(function (user) {
+    await auth.onAuthStateChanged(function (user) {
       
       if(user){
         console.log("user is logged on ")
@@ -128,8 +134,9 @@ class Group extends Component {
         console.log("No user logged")
       }
     });
-    
-    self.getData()
+
+    await this.getData()
+      
   }
 
   handleJoinGroup = (event) => {
@@ -343,19 +350,21 @@ class Group extends Component {
                 <div class="card member_card">
                   <div class="card-body">
                     <h5 class="card-title">Organizer</h5>
-                    <div class="card-img">
-                      <img src="#" alt="member_image"/>
-                    </div>
+                    {console.log("organizer" + this.state.organizer)}
+                    {this.state.organizer ? <PeopleCard userKey = {this.state.organizer} /> : null }
                   </div>
                 </div>
                 <div class="card member_card">
                   <div class="card-body">
                     <h5 class="card-title">Members</h5>
-                    <div class="card-img">
-                      <img src="#" alt="member_image"/>
-                      <img src="#" alt="member_image"/>
-                      <img src="#" alt="member_image"/>
-                    </div>
+                    {console.log("PRINT MEMBERS LIST")}
+                    {console.log(this.state.memberList)}
+                    {this.state.memberList.slice(1,this.state.memberList.length).map((item,key) =>
+            
+                          <Row>
+                            <PeopleCard userKey = {item} />
+                          </Row>
+                      )}
                   </div>
                 </div>
               </div>
