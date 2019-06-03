@@ -27,7 +27,7 @@ export default class EventCard extends Component {
         console.log("start states")
         console.log(this.state)
 
-        //this.handleClick = this.handleClick.bind(this)
+        this.handleJoin = this.handleJoin.bind(this)
     }
 
 
@@ -77,31 +77,63 @@ export default class EventCard extends Component {
     }
 
     
-    handleJoin = () => {
+    async handleJoin() {
         var self = this
+        var intheGroup = false
+        
+        //check if in the group
+        
+        await fire.database().ref("groups/" + this.state.content["group"] + "/member_list").once("value").then(function(snapshot){
+
+                        var group_member_list = snapshot.val()
+
+                        console.log("group member list")
+                        console.log(group_member_list)
+                        for(var i in group_member_list){
+
+                            if(self.state.userKey == group_member_list[i]){
+                                intheGroup = true
+                            }
+
+                        }
+        })
+
+        console.log("intheGroup")
+        console.log(intheGroup)
+
         if(!self.state.joined){
 
-            setTimeout(() =>  {
-                self.setState({joined: true})
-                
-                var groupRef = fire.database().ref("groups/" + self.state.content.group + "/event_list/" + self.state.index + "/member_list")
-                groupRef.once("value").then(function (snapshot) {
-                  
-                  var list = snapshot.val()
-                  console.log("list being pushed")
-                  console.log(list)
-                  console.log(typeof(list))
-                  list.push(self.state.userKey)
-                  
-                  self.setState({currentMemberList : list})
-                  groupRef.set(list)
-              });
-                console.log("pushed user in member_list");
-                console.log("after push state")
-                console.log(self.state)
-                
-                });
+            
 
+            
+            if (intheGroup == true){
+
+                setTimeout(() =>  {
+                    self.setState({joined: true})
+                    
+                    var groupRef = fire.database().ref("groups/" + self.state.content.group + "/event_list/" + self.state.index + "/member_list")
+                    groupRef.once("value").then(function (snapshot) {
+                    
+                    var list = snapshot.val()
+                    console.log("list being pushed")
+                    console.log(list)
+                    console.log(typeof(list))
+                    list.push(self.state.userKey)
+                    
+                    self.setState({currentMemberList : list})
+                    groupRef.set(list)
+                });
+                    console.log("pushed user in member_list");
+                    console.log("after push state")
+                    console.log(self.state)
+                    
+                    });
+
+            }
+            else{
+                alert("Must be in the group to join event")
+                window.location.href = "/group/" + this.state.content["group"]
+            }
         }
         else{
             setTimeout(() =>  {
@@ -129,6 +161,8 @@ export default class EventCard extends Component {
                 
                 });
         }
+        
+       
     }
     
     handleDelete = (event) => {
@@ -139,6 +173,7 @@ export default class EventCard extends Component {
         document.location.reload();
         //delete event in groups
     }
+
 
 
     render(){
