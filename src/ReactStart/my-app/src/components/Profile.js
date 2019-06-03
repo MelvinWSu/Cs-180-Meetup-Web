@@ -21,7 +21,7 @@ class Profile extends Component{
           first_name: "loading...",
           last_name: "loading...",
           bio: "loading...",
-          picture: null,
+          picture: "null",
           uniqueLink: "loading...",
           email: "https://www.tacobell.com/",
           groups : [],
@@ -102,7 +102,7 @@ class Profile extends Component{
           first_name: snapshot.val().f_name,
           last_name: snapshot.val().l_name,
           bio: snapshot.val().bio,
-          photo: snapshot.val().photo,
+          uniqueLink: snapshot.val().photo,
           email: snapshot.val().email,
           groups: snapshot.val().groups
         })
@@ -110,9 +110,10 @@ class Profile extends Component{
     
         console.log("the updated state")
         console.log(self.state)
+        console.log(self.state.photo)
       });
       
-    }, 100)
+    }, 100)   
   }
   
   componentDidMount() {
@@ -198,7 +199,7 @@ class Profile extends Component{
       bio: the_bio,
       //photo: the_pic
       });
-    
+    this.handleUpload()
     
     var self = this
     self.setState({
@@ -208,8 +209,6 @@ class Profile extends Component{
       //photo: the_pic,
       editing : false
     })
-
-    this.handleUpload()
 
     console.log(the_first_name + "\n" + the_last_name + "\n" + the_bio + "\n" + getKey)
     //change state
