@@ -288,9 +288,14 @@ class Group extends Component {
             <div class="row group_row">
               <div class="col-md-4">
                 <img src={group_placeholder}/>
-                <div class="col-md-12">
-                  <input id="join_group" class="btn btn-info" type="button" disabled = {this.state.permission || this.state.editing} value= {!this.state.joined ? "Join" : "Leave Group"} onClick={this.handleJoin}/>
-                  <Button variant = {this.state.permission ? "primary" : "outline-light"} disabled = {!this.state.permission} onClick = {this.handleEditButton}> {this.state.editing ? 'Cancel Edit' : 'Edit' }</Button>
+                <div class="col-md-12 mt-3">
+                  {!this.state.permission ? 
+                  <Button variant = "primary" disabled = {this.state.permission} value= {!this.state.joined ? "Join" : "Leave Group"} onClick={this.handleJoin}>{!this.state.joined ? "Join" : "Leave Group"}</Button>
+                  :
+                  <Button variant = "primary" disabled = {!this.state.permission} onClick = {this.handleEditButton}>{this.state.editing ? 'Cancel Edit' : 'Edit' }</Button>
+                  }
+                  
+                  
                 </div>
               </div>
               <div class="col-md-4">
@@ -316,7 +321,7 @@ class Group extends Component {
               <div class="col-xs-6" style = {{width : "400px", "maxWidth" : '400px'}}>
                 <div class="row">
                   <h3 class="py-4">Events</h3>
-                  <a class="btn btn-primary ml-auto my-auto" onClick = {this.goToCreateEvent}>Create Event</a>
+                  <a class="btn btn-primary m-4" onClick = {this.goToCreateEvent}>Create Event</a>
                 </div>
                 {Object.keys(this.state.eventList).slice(1,this.state.eventList.length).map((Key) =>
                   <div>
