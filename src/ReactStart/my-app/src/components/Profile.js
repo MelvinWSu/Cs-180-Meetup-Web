@@ -44,13 +44,10 @@ class Profile extends Component{
   }
 
   handleUpload = () => {
-    if (this.state.uniqueLink == null) {
-
-    }
-    else {
-      const {picture} = this.state;
-    const uploadTask = storage.ref(`profile_img/${picture.name}`).put(picture);
-    uploadTask.on('state_changed',
+    const {picture} = this.state;
+    if (picture != null) {
+      const uploadTask = storage.ref(`profile_img/${picture.name}`).put(picture);
+      uploadTask.on('state_changed',
       (snapshot) => {
       },
       (error) => {
@@ -68,7 +65,6 @@ class Profile extends Component{
         })
       });
     }
-    
   }
 
   getData() {

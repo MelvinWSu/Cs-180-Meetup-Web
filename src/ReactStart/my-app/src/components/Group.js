@@ -50,8 +50,9 @@ class Group extends Component {
 
   handleUpload = () => {
     const {picture} = this.state;
-    const uploadTask = storage.ref(`group_img/${picture.name}`).put(picture);
-    uploadTask.on('state_changed',
+    if (picture != null) {
+      const uploadTask = storage.ref(`group_img/${picture.name}`).put(picture);
+      uploadTask.on('state_changed',
       (snapshot) => {
       },
       (error) => {
@@ -68,6 +69,7 @@ class Group extends Component {
           });
         })
       });
+    }
   }
 
   async getData() {
