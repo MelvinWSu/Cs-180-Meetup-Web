@@ -44,7 +44,7 @@ class Profile extends Component{
   }
 
   handleUpload = () => {
-    if (this.uniqueLink == null) {
+    if (this.state.uniqueLink == null) {
 
     }
     else {
@@ -251,7 +251,7 @@ class Profile extends Component{
           </div>
           <div class="container mt-4 py-4">
             <p class="py-2 profile_text"><strong>About Me:</strong></p>
-            <Form.Control id = "profile_bio" as="textarea"  defaultValue = {props.bio} placeholder = "About Me" rows="3" />
+            <Form.Control id = "profile_bio" as="textarea" defaultValue = {props.bio} placeholder = "About Me" rows="3" />
           </div>
       </div>
     );
