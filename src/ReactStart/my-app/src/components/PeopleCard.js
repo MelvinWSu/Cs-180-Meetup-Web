@@ -50,16 +50,13 @@ export default class PeopleCard extends Component {
         
         return(
             <div>
-                <Card>
-                    <Row>
+                    <Row style = {{width : "300px"}}>
                         <Col>
                         {this.state.user ? <Nav.Link style = {{"color" : "black"}} variant = "dark" onClick = {() => window.location.href = "/profile/user/" + this.state.user}>
-                        <img src = {this.state.profile_photo} height = "30px" width = "30px" />
+                        <img src = {this.state.profile_photo} height = "30px" width = "30px" style = {{ "border-radius" : "50%"}} />
                         { " " + this.state.profile_email}</Nav.Link> : null}
                         </Col> 
-                    </Row>
-                </Card>
-                
+                    </Row>                
             </div>
          
         )

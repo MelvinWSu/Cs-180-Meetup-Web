@@ -204,7 +204,7 @@ class Profile extends Component{
           <div class="container mt-4 py-4">
             <div class="row">
               <div class="col-md-4 px-4">
-              <img src={props.uniqueLink || "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG/220px-Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG"} height = "300" width = "300" id="profile_img"/>   
+              <img src={props.uniqueLink || "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG/220px-Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG"} height = "300" width = "300" id="profile_img" style = {{"border-radius" : "50%"}}/>   
                 <div class="card border-0">
 
                   <div class="card-head">
@@ -258,7 +258,7 @@ class Profile extends Component{
           <div class="container mt-4 py-4">
             <div class="row">
               <div class="col-md-4 px-4">
-              <img src={props.uniqueLink || "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG/220px-Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG"} height = "300" width = "300" id="profile_img" />   
+              <img src={props.uniqueLink || "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG/220px-Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG"} height = "300" width = "300" id="profile_img" style = {{"border-radius" : "50%"}} />   
                                     
                 <div class="card border-0">
                   <div class="card-head">
@@ -338,9 +338,9 @@ class Profile extends Component{
       
       <Row>
       <Col></Col>
-      <Col xs = {8}>
+      <Col>
       <Carousel style = {{"background-color" : "white"}}>
-        
+  
         {this.state.groups.slice(1,this.state.groups.length).map((item,key) =>
           
           <Carousel.Item>

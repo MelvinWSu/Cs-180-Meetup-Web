@@ -377,6 +377,8 @@ class Group extends Component {
                   <h3 class="py-4">Events</h3>
                   <a class="btn btn-primary m-4" onClick = {this.goToCreateEvent}>Create Event</a>
                 </div>
+                <Row>
+                  
                 {Object.keys(this.state.eventList).slice(1,this.state.eventList.length).map((Key) =>
                   <div>
                     <Row>
@@ -384,6 +386,9 @@ class Group extends Component {
                     </Row>
                   </div>
                 )}
+                
+                </Row>
+
               </div>
               <div class="col-xs-4 offset-md-1">
                 <h3 class="py-4">Members</h3>
