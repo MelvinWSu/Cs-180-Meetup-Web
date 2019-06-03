@@ -18,7 +18,7 @@ class UploadImage extends Component {
         }
     }
     handleUpload = () => {
-        const { picture } = this.state;
+        const {picture} = this.state;
         const uploadTask = storage.ref(`profile_img/${picture.name}`).put(picture);
         uploadTask.on('state_changed',
             (snapshot) => {

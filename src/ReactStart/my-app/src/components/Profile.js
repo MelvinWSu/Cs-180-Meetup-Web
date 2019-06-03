@@ -59,6 +59,11 @@ class Profile extends Component{
         storage.ref('profile_img').child(picture.name).getDownloadURL().then(uniqueLink => {
           console.log(uniqueLink);
           this.setState({uniqueLink});
+          
+          let getKey = window.location.pathname.split('/user/')[1]
+          fire.database().ref("users/" + getKey).update({
+            photo: this.state.uniqueLink
+          });
         })
       });
     /*var fileName = this.props.picture.name;
@@ -97,6 +102,7 @@ class Profile extends Component{
           first_name: snapshot.val().f_name,
           last_name: snapshot.val().l_name,
           bio: snapshot.val().bio,
+          photo: snapshot.val().photo,
           email: snapshot.val().email,
           groups: snapshot.val().groups
         })
@@ -189,7 +195,9 @@ class Profile extends Component{
     fire.database().ref("users/" + getKey).update({
       f_name: the_first_name,
       l_name: the_last_name,
-      bio: the_bio});
+      bio: the_bio,
+      //photo: the_pic
+      });
     
     
     var self = this
@@ -197,8 +205,11 @@ class Profile extends Component{
       first_name: the_first_name,
       last_name: the_last_name,
       bio: the_bio,
+      //photo: the_pic,
       editing : false
     })
+
+    this.handleUpload()
 
     console.log(the_first_name + "\n" + the_last_name + "\n" + the_bio + "\n" + getKey)
     //change state
@@ -210,11 +221,11 @@ class Profile extends Component{
     return(
       <div>
         <br/>
-        <Button onClick = {props.submit} onClick={this.handleUpload}> Submit </Button>
+        <Button onClick = {props.submit}> Submit </Button>
           <div class="container mt-4 py-4">
             <div class="row">
               <div class="col-md-4 px-4">
-              <img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG/220px-Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG" height = "300" width = "300" id="profile_img"/>   
+              <img src={props.uniqueLink || "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG/220px-Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG"} height = "300" width = "300" id="profile_img"/>   
                 <div class="card border-0">
 
                   <div class="card-head">
@@ -223,7 +234,7 @@ class Profile extends Component{
                         <Row>
                           <Col></Col>
                           <Col>
-                          <input id = "profile_pic" type="file" class="file-select" accept="image/*" onChange={this.handleChange}/>
+                          <input id="profile_pic" type="file" class="file-select" accept="image/*" onChange={props.change}/>
                           </Col>
                           <Col></Col>
 
@@ -268,8 +279,8 @@ class Profile extends Component{
           <div class="container mt-4 py-4">
             <div class="row">
               <div class="col-md-4 px-4">
-               {props.picture ? <img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG/220px-Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG" height = "300" width = "300" id="profile_img" />   
-                                    : "Loading Image..."}
+              <img src={props.uniqueLink || "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG/220px-Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG"} height = "300" width = "300" id="profile_img" />   
+                                    
                 <div class="card border-0">
                   <div class="card-head">
                       
@@ -331,13 +342,16 @@ class Profile extends Component{
                                                       email = {this.state.email}
                                                       bio = {this.state.bio}
                                                       submit = {this.handleEditSubmit}
-                                                      picture = {this.state.picture}/>
+                                                      change = {this.handleChange}
+                                                      picture = {this.state.picture}
+                                                      uniqueLink = {this.state.uniqueLink}/>
                                                     :
                               <this.handleViewRender first_name = {this.state.first_name}
                                 last_name = {this.state.last_name}
                                 email = {this.state.email}
                                 bio = {this.state.bio}
                                 picture = {this.state.picture}
+                                uniqueLink={this.state.uniqueLink}
                                   />}
         
       </header>
