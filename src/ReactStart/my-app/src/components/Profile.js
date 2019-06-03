@@ -308,7 +308,7 @@ class Profile extends Component{
             <Nav className="ml-auto">
 
               <NavItem className="ml-auto">
-                <Nav.Link className="ml-auto" href="./create_group">Create Group</Nav.Link>
+                <Nav.Link className="ml-auto" href="../../createGroup">Create Group</Nav.Link>
               </NavItem>
               <NavItem className="ml-auto">
                 <Nav.Link className="ml-auto" onClick = {Logout}>Logout</Nav.Link>

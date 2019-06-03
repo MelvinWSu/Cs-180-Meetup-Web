@@ -17,7 +17,7 @@ class Homepage extends Component {
     return (
     <header>
       <Navbar bg="light" expand="md">
-        <Navbar.Brand href="./main">Meetup</Navbar.Brand>
+        <Navbar.Brand href="./">Meetup</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="navbarCollapse">
           <Nav className="ml-auto">
