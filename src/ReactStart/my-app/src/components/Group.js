@@ -105,10 +105,7 @@ class Group extends Component {
             memberListRef.once("value").then(function (snapshot) {
               
               var list = snapshot.val()
-              console.log("<<<<list>>>>")
-              console.log(list)
-              console.log("userKey")
-              console.log(self.state.userKey)
+             
               for( var i in list){
                 if (list[i] == self.state.userKey){
                   console.log("FOUND")
