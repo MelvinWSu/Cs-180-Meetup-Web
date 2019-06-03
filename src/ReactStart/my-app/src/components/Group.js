@@ -50,8 +50,9 @@ class Group extends Component {
 
   handleUpload = () => {
     const {picture} = this.state;
-    const uploadTask = storage.ref(`group_img/${picture.name}`).put(picture);
-    uploadTask.on('state_changed',
+    if (picture != null) {
+      const uploadTask = storage.ref(`group_img/${picture.name}`).put(picture);
+      uploadTask.on('state_changed',
       (snapshot) => {
       },
       (error) => {
@@ -68,6 +69,7 @@ class Group extends Component {
           });
         })
       });
+    }
   }
 
   async getData() {
@@ -326,7 +328,7 @@ class Group extends Component {
                 userKey = {this.state.userKey}
               />
               <NavItem className="ml-auto">
-                <Nav.Link className="ml-auto" href="/create_group">Create Group</Nav.Link>
+                <Nav.Link className="ml-auto" href="/createGroup">Create Group</Nav.Link>
               </NavItem>
               <NavItem className="ml-auto">
                 <Nav.Link className="ml-auto" onClick = {Logout}>Logout</Nav.Link>

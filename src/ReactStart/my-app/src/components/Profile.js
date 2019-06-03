@@ -44,13 +44,10 @@ class Profile extends Component{
   }
 
   handleUpload = () => {
-    if (this.state.uniqueLink == null) {
-
-    }
-    else {
-      const {picture} = this.state;
-    const uploadTask = storage.ref(`profile_img/${picture.name}`).put(picture);
-    uploadTask.on('state_changed',
+    const {picture} = this.state;
+    if (picture != null) {
+      const uploadTask = storage.ref(`profile_img/${picture.name}`).put(picture);
+      uploadTask.on('state_changed',
       (snapshot) => {
       },
       (error) => {
@@ -68,7 +65,6 @@ class Profile extends Component{
         })
       });
     }
-    
   }
 
   getData() {
@@ -312,7 +308,7 @@ class Profile extends Component{
             <Nav className="ml-auto">
 
               <NavItem className="ml-auto">
-                <Nav.Link className="ml-auto" href="./create_group">Create Group</Nav.Link>
+                <Nav.Link className="ml-auto" href="../../createGroup">Create Group</Nav.Link>
               </NavItem>
               <NavItem className="ml-auto">
                 <Nav.Link className="ml-auto" onClick = {Logout}>Logout</Nav.Link>

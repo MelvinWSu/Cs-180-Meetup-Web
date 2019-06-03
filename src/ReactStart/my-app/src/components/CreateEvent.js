@@ -5,8 +5,10 @@ import { Nav, Navbar, NavItem } from 'react-bootstrap';
 import { Image } from 'react-bootstrap';
 import img_placeholder from './pics/img_placeholder.png';
 import group_placeholder from './pics/group_placeholder.png';
-import fire from '../fire';
+import fire, {auth} from '../fire';
 import { tsPropertySignature } from '@babel/types';
+import forwardToProfile from './forwardToProfile'
+import Logout from './Logout';
 
 let event_details = {
   event_name: '',
@@ -33,7 +35,6 @@ function addEvent() {
   alert("Event Creation Successful");
   window.location.href = '/group/' +  window.location.pathname.split('/createEvent/')[1]
 
-
 }
 
 function CreateEvent(props) {
@@ -48,10 +49,10 @@ function CreateEvent(props) {
               <Nav.Link href="./profile">Profile</Nav.Link>
             </NavItem>
             <NavItem className="ml-auto">
-              <Nav.Link className="ml-auto" href="./create_event">Create Event</Nav.Link>
+              <Nav.Link className="ml-auto" href="./createGroup">Create Group</Nav.Link>
             </NavItem>
             <NavItem className="ml-auto">
-              <Nav.Link className="ml-auto" href="#">Logout</Nav.Link>
+              <Nav.Link className="ml-auto" onClick={Logout}>Logout</Nav.Link>
             </NavItem>
           </Nav>
         </Navbar.Collapse>
