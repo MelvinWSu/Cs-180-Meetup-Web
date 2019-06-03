@@ -17,6 +17,8 @@ export default class EventCard extends Component {
             content: this.props.content,
             index : this.props.index,
             joined: false,
+            permission: false,
+
 
             currentMemberList : []
         }
@@ -45,7 +47,12 @@ export default class EventCard extends Component {
                 snapshot.forEach(function(data) {
         
                     self.setState({userKey: data.key})
-                  
+                    var getLeader = fire.database().ref("groups/" + self.state.content.group + "/leader")
+                    getLeader.once("value").then(function(snapshot1) {
+                        if (snapshot1.val() == data.key) {
+                            self.setState({permission: true})
+                        }
+                    })
                     var memberListRef = fire.database().ref("groups/" + self.state.content.group + "/event_list/" + self.state.index + "/member_list")
                     memberListRef.once("value").then(function (snapshot) {
                     
@@ -128,20 +135,30 @@ export default class EventCard extends Component {
     }
     
     handleDelete = (event) => {
-        event.preventDefault()
         var self = this
         var groupRef = fire.database().ref("groups/" + self.state.content.group + "/event_list/" + self.state.index)
         this.state.visible = false
         groupRef.remove();
         document.location.reload();
         //delete event in groups
-        
     }
+
+
     render(){
         return(
             <div>
             <Card style = {{width : "400px", "maxWidth" : '400px'}}>
-                <Card.Title> {this.state.content['event_name']}</Card.Title>
+                <div class = "row">
+                    <div class = "col"></div>
+                    <div class = "col-6">
+                <Card.Title class = "mt-2 font-weight-bold"> {this.state.content['event_name']}</Card.Title>
+                    </div>
+                    <div class = "col">
+                        {this.state.permission ? <button class = "mx-1" type = "button" class= "close" aria-label= "Close" onClick = {this.handleDelete} disabled = {this.state.permission ?  "hidden" : "visible"}>
+                            <span aria-hidden="true">&times;</span>
+                        </button> : null}
+                    </div>
+                </div>
                 <Card.Body>
                     {this.state.content.time}
                     <br/>

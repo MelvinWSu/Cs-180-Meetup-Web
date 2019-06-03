@@ -380,7 +380,7 @@ class Group extends Component {
                 {Object.keys(this.state.eventList).slice(1,this.state.eventList.length).map((Key) =>
                   <div>
                     <Row>
-                      <EventCard content = {this.state.eventList[Key]} groupID = {window.location.pathname.split('/group/')[1]} index = {Key} currentUser = {this.state.userKey} />
+                      <EventCard content = {this.state.eventList[Key]} groupID = {window.location.pathname.split('/group/')[1]} index = {Key} currentUser = {this.state.userKey}/>
                     </Row>
                   </div>
                 )}
@@ -400,11 +400,15 @@ class Group extends Component {
                     {console.log("PRINT MEMBERS LIST")}
                     {console.log(this.state.memberList)}
                     {this.state.memberList.slice(1,this.state.memberList.length).map((item,key) =>
-            
-                          <Row>
-                            <PeopleCard userKey = {item} />
-                          </Row>
-                      )}
+                    <div class = "row">
+                      <div class = "mx-auto">
+                        <Row class = "">
+                          <PeopleCard userKey = {item} />
+                        </Row>
+                      </div>
+                    </div>
+                      
+                    )}
                   </div>
                 </div>
               </div>
