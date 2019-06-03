@@ -6,6 +6,8 @@ import { Image } from 'react-bootstrap';
 import img_placeholder from './pics/img_placeholder.png';
 import group_placeholder from './pics/group_placeholder.png';
 import fire, {auth} from '../fire';
+import Logout from './Logout';
+import forwardToProfile from './forwardToProfile'
 
 class CreateGroup extends Component {
   constructor(props) {
@@ -50,6 +52,20 @@ class CreateGroup extends Component {
     ;
   }
 
+  handleProfileButtonClick() {
+
+    if (auth.currentUser) {
+
+      //get key of current user
+      //forward to that profile
+      forwardToProfile(auth.currentUser.email);
+    }
+    else {
+      alert("Not Logged On")
+      window.location.href = "/"
+    }
+  }
+
   componentDidMount() {
     
     auth.onAuthStateChanged(function (user) {
@@ -80,13 +96,13 @@ class CreateGroup extends Component {
           <Navbar.Collapse>
             <Nav className="ml-auto">
               <NavItem className="ml-auto">
-                <Nav.Link href="./profile">Profile</Nav.Link>
+                <Nav.Link onClick={this.handleProfileButtonClick}>Profile</Nav.Link>
               </NavItem>
               <NavItem className="ml-auto">
-                <Nav.Link className="ml-auto" href="./create_group">Create Group</Nav.Link>
+                <Nav.Link className="ml-auto" href="./createGroup">Create Group</Nav.Link>
               </NavItem>
               <NavItem className="ml-auto">
-                <Nav.Link className="ml-auto" href="#">Logout</Nav.Link>
+                <Nav.Link className="ml-auto" onClick={Logout}>Logout</Nav.Link>
               </NavItem>
             </Nav>
           </Navbar.Collapse>
