@@ -9,6 +9,7 @@ import {BrowserRouter as Router, Route} from 'react-router-dom';
 import fire, {auth} from '../fire';
 import Logout from './Logout';
 import GroupCard from './GroupCard';
+import {storage} from '../fire';
 
 class Profile extends Component{
   constructor(props){
@@ -30,9 +31,40 @@ class Profile extends Component{
           editing: false
         }
      this.handleEdit = this.handleEditButton.bind(this);
-     this.handleEditSubmit = this.handleEditSubmit.bind(this)
+     this.handleEditSubmit = this.handleEditSubmit.bind(this);
+     this.handleChange = this.handleChange.bind(this);
+     this.handleUpload = this.handleUpload.bind(this);
   }
- 
+  
+  handleChange = event => {
+    if (event.target.files[0]) {
+      const picture = event.target.files[0];
+      this.setState(() => ({picture}));
+    }
+  }
+
+  handleUpload = () => {
+    const {picture} = this.state;
+    const uploadTask = storage.ref(`profile_img/${picture.name}`).put(picture);
+    uploadTask.on('state_changed',
+      (snapshot) => {
+      },
+      (error) => {
+        console.log(error);
+      },
+      () => {
+        storage.ref('profile_img').child(picture.name).getDownloadURL().then(uniqueLink => {
+          console.log(uniqueLink);
+          this.setState({uniqueLink});
+          
+          let getKey = window.location.pathname.split('/user/')[1]
+          fire.database().ref("users/" + getKey).update({
+            photo: this.state.uniqueLink
+          });
+        })
+      });
+  }
+
   getData() {
     //url will probably look like Profile/user/<unique key>
     //firebase key, uid from email creation, possible custom gen can be used, firebase key is used
@@ -50,16 +82,18 @@ class Profile extends Component{
           first_name: snapshot.val().f_name,
           last_name: snapshot.val().l_name,
           bio: snapshot.val().bio,
+          uniqueLink: snapshot.val().photo,
           email: snapshot.val().email,
           groups: snapshot.val().groups
         })
-        
     
         console.log("the updated state")
         console.log(self.state)
+        console.log("image url:")
+        console.log(self.state.photo)
       });
       
-    }, 100)
+    }, 100)   
   }
   
   componentDidMount() {
@@ -142,14 +176,17 @@ class Profile extends Component{
     fire.database().ref("users/" + getKey).update({
       f_name: the_first_name,
       l_name: the_last_name,
-      bio: the_bio});
-    
+      bio: the_bio,
+      //photo: the_pic
+      });
+    this.handleUpload()
     
     var self = this
     self.setState({
       first_name: the_first_name,
       last_name: the_last_name,
       bio: the_bio,
+      //photo: the_pic,
       editing : false
     })
 
@@ -167,7 +204,7 @@ class Profile extends Component{
           <div class="container mt-4 py-4">
             <div class="row">
               <div class="col-md-4 px-4">
-              <img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG/220px-Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG" height = "300" width = "300" id="profile_img"/>   
+              <img src={props.uniqueLink || "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG/220px-Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG"} height = "300" width = "300" id="profile_img"/>   
                 <div class="card border-0">
 
                   <div class="card-head">
@@ -176,7 +213,7 @@ class Profile extends Component{
                         <Row>
                           <Col></Col>
                           <Col>
-                          <input id = "profile_pic" type="file" class="file-select" accept="image/*"/>
+                          <input id="profile_pic" type="file" class="file-select" accept="image/*" onChange={props.change}/>
                           </Col>
                           <Col></Col>
 
@@ -221,8 +258,8 @@ class Profile extends Component{
           <div class="container mt-4 py-4">
             <div class="row">
               <div class="col-md-4 px-4">
-               {props.picture ? <img src = "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG/220px-Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG" height = "300" width = "300" id="profile_img" />   
-                                    : "Loading Image..."}
+              <img src={props.uniqueLink || "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG/220px-Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG"} height = "300" width = "300" id="profile_img" />   
+                                    
                 <div class="card border-0">
                   <div class="card-head">
                       
@@ -286,13 +323,14 @@ class Profile extends Component{
                                                       email = {this.state.email}
                                                       bio = {this.state.bio}
                                                       submit = {this.handleEditSubmit}
-                                                      picture = {this.state.picture}/>
+                                                      change = {this.handleChange}
+                                                      uniqueLink = {this.state.uniqueLink}/>
                                                     :
                               <this.handleViewRender first_name = {this.state.first_name}
                                 last_name = {this.state.last_name}
                                 email = {this.state.email}
                                 bio = {this.state.bio}
-                                picture = {this.state.picture}
+                                uniqueLink={this.state.uniqueLink}
                                   />}
         
       </header>
@@ -323,8 +361,8 @@ class Profile extends Component{
   }
 }
 
-function uploadImage() {
+/*function uploadImage() {
 
-};
+};*/
 
 export default Profile
