@@ -7,6 +7,7 @@ import img_placeholder from './pics/img_placeholder.png';
 import group_placeholder from './pics/group_placeholder.png';
 import fire, {auth} from '../fire';
 import EventCard from './EventCard';
+import {storage} from '../fire';
 
 class Group extends Component {
   constructor(props) {
@@ -16,6 +17,8 @@ class Group extends Component {
     this.state = {
       group_name: "loading...",
       group_bio: "loading...",
+      picture: null,
+      uniqueLink: '',
       values: [],
       joined : false,
       listOfPositions: [],
@@ -30,8 +33,39 @@ class Group extends Component {
 
     this.handleJoin = this.handleJoinGroup.bind(this)
     this.handleEditSubmit = this.handleEditSubmit.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+    this.handleUpload = this.handleUpload.bind(this)
   }
   
+  handleChange = event => {
+    if (event.target.files[0]) {
+      const picture = event.target.files[0];
+      this.setState(() => ({picture}));
+    }
+  }
+
+  handleUpload = () => {
+    const {picture} = this.state;
+    const uploadTask = storage.ref(`group_img/${picture.name}`).put(picture);
+    uploadTask.on('state_changed',
+      (snapshot) => {
+      },
+      (error) => {
+        console.log(error);
+      },
+      () => {
+        storage.ref('group_img').child(picture.name).getDownloadURL().then(uniqueLink => {
+          console.log(uniqueLink);
+          this.setState({uniqueLink});
+          
+          let getKey = window.location.pathname.split('/group/')[1]
+          fire.database().ref("groups/" + getKey).update({
+            photo: this.state.uniqueLink
+          });
+        })
+      });
+  }
+
   getData() {
     console.log("getData")
     setTimeout(() => {
@@ -42,7 +76,8 @@ class Group extends Component {
           group_name: snapshot.val().group_name,
           group_bio: snapshot.val().group_bio,
           eventList: snapshot.val().event_list,
-          memberList : snapshot.val().member_list
+          memberList : snapshot.val().member_list,
+          uniqueLink: snapshot.val().photo
         })
         console.log("updated State")
         console.log(self.state)
@@ -219,6 +254,7 @@ class Group extends Component {
       group_bio: new_group_bio,
     });
 
+    this.handleUpload()
     var self = this
 
     self.setState({
@@ -231,6 +267,7 @@ class Group extends Component {
   handleEditRender(props){
     return (
       <div class="col-xs-4">
+        <input type="file" accept="image/*" onChange={props.change} />
         <h3>Group Name</h3>
         <div className="form-group">
           <input id = "group_edit_name" type="text" defaultValue={props.group_name} placeholder = "Group Name" required/>
@@ -287,7 +324,7 @@ class Group extends Component {
           <div class="container">
             <div class="row group_row">
               <div class="col-md-4">
-                <img src={group_placeholder}/>
+                <img src={this.state.uniqueLink || group_placeholder} height="300" width="300"/>
                 <div class="col-md-12">
                   <input id="join_group" class="btn btn-info" type="button" value= {!this.state.joined ? "Join" : "Leave Group"} onClick={this.handleJoin}></input>
                   <Button variant = {this.state.permissions ? "primary" : "outline-light"} disabled = {!this.state.permissions} onClick = {this.handleEditButton}> {this.state.editing ? 'Cancel Edit' : 'Edit' }</Button>
@@ -299,11 +336,14 @@ class Group extends Component {
                   group_name = {this.state.group_name}
                   group_bio = {this.state.group_bio}
                   submit = {this.handleEditSubmit}
+                  change = {this.handleChange}
+                  uniqueLink = {this.state.uniqueLink}
                 />
                 :
                 <this.handleViewRender
                   group_name = {this.state.group_name}
                   group_bio = {this.state.group_bio}
+                  uniqueLink = {this.state.uniqueLink}
                 />
                 }
               </div>
