@@ -21,7 +21,7 @@ class Profile extends Component{
           first_name: "loading...",
           last_name: "loading...",
           bio: "loading...",
-          picture: "null",
+          picture: null,
           uniqueLink: "loading...",
           email: "https://www.tacobell.com/",
           groups : [],
@@ -40,9 +40,6 @@ class Profile extends Component{
     if (event.target.files[0]) {
       const picture = event.target.files[0];
       this.setState(() => ({picture}));
-      /*this.setState({
-        picture: event.target.files[0]
-      })*/
     }
   }
 
@@ -66,23 +63,6 @@ class Profile extends Component{
           });
         })
       });
-    /*var fileName = this.props.picture.name;
-    var storageRef = fire.storage().ref('/images/' + fileName);
-
-    var uploadTask = storageRef.put(this.props.picture);
-    uploadTask.on('state_changed', 
-    function(snapshot) {
-
-    }, 
-    function(error) {
-      console.log(error)
-    },
-    function() {
-      //storage.ref('images').child(picture.name).getDownloadURL().then(uniqueLink => {
-      var downloadURL = uploadTask.snapshot.downloadURL;  
-      console.log(downloadURL)
-      }
-    );*/
   }
 
   getData() {
@@ -106,10 +86,10 @@ class Profile extends Component{
           email: snapshot.val().email,
           groups: snapshot.val().groups
         })
-        
     
         console.log("the updated state")
         console.log(self.state)
+        console.log("image url:")
         console.log(self.state.photo)
       });
       
@@ -342,14 +322,12 @@ class Profile extends Component{
                                                       bio = {this.state.bio}
                                                       submit = {this.handleEditSubmit}
                                                       change = {this.handleChange}
-                                                      picture = {this.state.picture}
                                                       uniqueLink = {this.state.uniqueLink}/>
                                                     :
                               <this.handleViewRender first_name = {this.state.first_name}
                                 last_name = {this.state.last_name}
                                 email = {this.state.email}
                                 bio = {this.state.bio}
-                                picture = {this.state.picture}
                                 uniqueLink={this.state.uniqueLink}
                                   />}
         
