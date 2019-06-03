@@ -9,6 +9,7 @@ import fire, {auth} from '../fire';
 import EventCard from './EventCard';
 import Logout from './Logout';
 import PeopleCard from './PeopleCard';
+import {storage} from '../fire';
 
 class Group extends Component {
   constructor(props) {
@@ -18,6 +19,8 @@ class Group extends Component {
     this.state = {
       group_name: "loading...",
       group_bio: "loading...",
+      picture: null,
+      uniqueLink: '',
       values: [],
       leader: "",
       joined : false,
@@ -34,8 +37,39 @@ class Group extends Component {
 
     this.handleJoin = this.handleJoinGroup.bind(this)
     this.handleEditSubmit = this.handleEditSubmit.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+    this.handleUpload = this.handleUpload.bind(this)
   }
   
+  handleChange = event => {
+    if (event.target.files[0]) {
+      const picture = event.target.files[0];
+      this.setState(() => ({picture}));
+    }
+  }
+
+  handleUpload = () => {
+    const {picture} = this.state;
+    const uploadTask = storage.ref(`group_img/${picture.name}`).put(picture);
+    uploadTask.on('state_changed',
+      (snapshot) => {
+      },
+      (error) => {
+        console.log(error);
+      },
+      () => {
+        storage.ref('group_img').child(picture.name).getDownloadURL().then(uniqueLink => {
+          console.log(uniqueLink);
+          this.setState({uniqueLink});
+          
+          let getKey = window.location.pathname.split('/group/')[1]
+          fire.database().ref("groups/" + getKey).update({
+            photo: this.state.uniqueLink
+          });
+        })
+      });
+  }
+
   async getData() {
     console.log("getData")
     var self = this;
@@ -49,7 +83,8 @@ class Group extends Component {
           leader: snapshot.val().leader,
           eventList: snapshot.val().event_list,
           memberList : snapshot.val().member_list,
-          organizer : snapshot.val().leader
+          organizer : snapshot.val().leader,
+          uniqueLink: snapshot.val().photo
         })
         console.log("updated State")
         console.log(self.state)
@@ -226,6 +261,7 @@ class Group extends Component {
       group_bio: new_group_bio,
     });
 
+    this.handleUpload()
     var self = this
 
     self.setState({
@@ -238,6 +274,7 @@ class Group extends Component {
   handleEditRender(props){
     return (
       <div class="col-xs-4">
+        <input type="file" accept="image/*" onChange={props.change} />
         <h3>Group Name</h3>
         <div className="form-group">
           <input id = "group_edit_name" type="text" defaultValue={props.group_name} placeholder = "Group Name" required/>
@@ -302,7 +339,7 @@ class Group extends Component {
           <div class="container">
             <div class="row group_row">
               <div class="col-md-4">
-                <img src={group_placeholder}/>
+                <img src={this.state.uniqueLink || group_placeholder} height="300" width="300"/>
                 <div class="col-md-12 mt-3">
                   {!this.state.permission ? 
                   <Button variant = "primary" disabled = {this.state.permission} value= {!this.state.joined ? "Join" : "Leave Group"} onClick={this.handleJoin}>{!this.state.joined ? "Join" : "Leave Group"}</Button>
@@ -318,11 +355,14 @@ class Group extends Component {
                   group_name = {this.state.group_name}
                   group_bio = {this.state.group_bio}
                   submit = {this.handleEditSubmit}
+                  change = {this.handleChange}
+                  uniqueLink = {this.state.uniqueLink}
                 />
                 :
                 <this.handleViewRender
                   group_name = {this.state.group_name}
                   group_bio = {this.state.group_bio}
+                  uniqueLink = {this.state.uniqueLink}
                 />
                 }
               </div>
