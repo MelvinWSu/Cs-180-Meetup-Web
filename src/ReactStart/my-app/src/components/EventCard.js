@@ -15,7 +15,8 @@ export default class EventCard extends Component {
 
             content: this.props.content,
             index : this.props.index,
-            joined: false
+            joined: false,
+            visible: true
         }
 
         console.log("start states")
@@ -124,23 +125,47 @@ export default class EventCard extends Component {
         }
     }
     
-    render(){
-
+    handleDelete = (event) => {
+        event.preventDefault()
+        var self = this
+        var groupRef = fire.database().ref("groups/" + self.state.content.group + "/event_list/" + self.state.index)
+        this.state.visible = false
+        groupRef.remove();
+        document.location.reload();
+        //delete event in groups
         
+    }
+    render(){
         return(
-
             <div>
-            <Card style = {{width : "400px", "maxWidth" : '400px'}}>
-                <Card.Title> {this.state.content['event_name']}</Card.Title>
-                <Card.Body>
-                    {this.state.content.time}
-                    <br/>
-                    {this.state.content['desc']}
-                </Card.Body>
-                <Card.Footer>
-                    <Button onClick = {this.handleJoin}>{!this.state.joined ? "+RSVP" : "-Leave" }</Button>
-                </Card.Footer>
-            </Card>
+                {this.state.visible ?
+                    <div>
+                    <Card style = {{width : "400px", "maxWidth" : '400px'}}>
+                        <div class = "row">
+                            <div class="col"></div>
+                            <div class="col-6">
+                                <Card.Title class = "mt-2 font-weight-bold"> {this.state.content['event_name']}</Card.Title>
+                            </div>
+                            <div class= "col">
+                                <button class = "mx-1" type = "button" class= "close" aria-label= "Close" onClick = {this.handleDelete}>
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        </div>
+                        <Card.Body>
+                            {this.state.content.time}
+                            <br/>
+                            {this.state.content['desc']}
+                        </Card.Body>
+                        <Card.Footer>
+                            <Button onClick = {this.handleJoin}>{!this.state.joined ? "+RSVP" : "-Leave" }</Button>
+
+                        </Card.Footer>
+                    </Card>
+                </div>
+                :
+                <div/>
+                }
             </div>
         )
     }
