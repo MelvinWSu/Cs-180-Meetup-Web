@@ -14,7 +14,7 @@ class CreateGroup extends Component {
     this.state = {
       group_name: '',
       photo: '',
-      bio: '',
+      group_bio: '',
       member_list: [''],
       event_list: [''],
       leader: ''
@@ -26,7 +26,7 @@ class CreateGroup extends Component {
     var self = this;
     console.log(self);
     self.state.group_name = document.getElementById("creategroup_name").value;
-    self.state.bio = document.getElementById("creategroup_bio").value;
+    self.state.group_bio = document.getElementById("creategroup_bio").value;
     auth.onAuthStateChanged(function (user){
       if (user) {
         var ref = fire.database().ref("users");

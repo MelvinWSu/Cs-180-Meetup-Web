@@ -7,6 +7,7 @@ import img_placeholder from './pics/img_placeholder.png';
 import group_placeholder from './pics/group_placeholder.png';
 import fire, {auth} from '../fire';
 import EventCard from './EventCard';
+import Logout from './Logout';
 
 class Group extends Component {
   constructor(props) {
@@ -17,6 +18,7 @@ class Group extends Component {
       group_name: "loading...",
       group_bio: "loading...",
       values: [],
+      leader: "",
       joined : false,
       listOfPositions: [],
       eventList: [],
@@ -24,7 +26,8 @@ class Group extends Component {
       userKey : null,
       currentUser : null,
       editing: false,
-      permission: false
+      permission: false,
+      firstLoad: true,
      }
     //this.joined = false;
 
@@ -41,6 +44,7 @@ class Group extends Component {
         self.setState({
           group_name: snapshot.val().group_name,
           group_bio: snapshot.val().group_bio,
+          leader: snapshot.val().leader,
           eventList: snapshot.val().event_list,
           memberList : snapshot.val().member_list
         })
@@ -75,8 +79,7 @@ class Group extends Component {
     })
   }  
 
-  componentDidMount() {
-    
+  componentDidMount() {  
     console.log("componentDidMount")
     console.log("initial state:")
     console.log(this.state)
@@ -94,42 +97,39 @@ class Group extends Component {
         })
         
         var ref = fire.database().ref("users");
-        ref.orderByChild("email").equalTo(self.state.currentUser.email).on("value", function(snapshot){
+        var getLeader;
+         ref.orderByChild("email").equalTo(self.state.currentUser.email).on("value", function(snapshot){
           snapshot.forEach(function(data) {
-             
-            self.setState({userKey: data.key, permissions: true})
-            
-            var groups = data.child("groups");
-
+            self.setState({userKey: data.key})
+            fire.database().ref("groups/" + window.location.pathname.split('/group/')[1]).on("value",function(snapshot1){
+              console.log(snapshot1.val())
+              getLeader = snapshot1.val().leader;
+            })
             var memberListRef = fire.database().ref("groups/" + window.location.pathname.split('/group/')[1] + "/member_list")
             memberListRef.once("value").then(function (snapshot) {
-              
               var list = snapshot.val()
-             
-              for( var i in list){
-                if (list[i] == self.state.userKey){
+              
+              for(var i in list){
+                if (list[i] == self.state.userKey && self.state.firstLoad){
                   console.log("FOUND")
                   self.setState({joined: true})
+                  if (list[i] == getLeader) {
+                    self.setState({permission: true})
+                  }
                 }
               }
-    
+              self.setState({firstLoad: false})
             })
-
           });
           console.log("done with setting USERKEY")
         })
-
-     
       }
       else{
         console.log("No user logged")
       }
-
-      
     });
-
+    
     self.getData()
-      
   }
 
   handleJoinGroup = (event) => {
@@ -170,7 +170,7 @@ class Group extends Component {
       //delete group in user database
       
       setTimeout(() =>{
-      
+        self.setState({joined: false})
       var userRef = fire.database().ref("users/" + self.state.userKey + "/groups");
       userRef.once("value").then(function (snapshot) {
           var groupList = snapshot.val()
@@ -202,7 +202,7 @@ class Group extends Component {
         }
         groupRef.set(newList)
         self.setState({memberList: newList})
-        self.setState({joined: false})
+        
         });
       }); 
     }
@@ -277,7 +277,7 @@ class Group extends Component {
                 <Nav.Link className="ml-auto" href="/create_group">Create Group</Nav.Link>
               </NavItem>
               <NavItem className="ml-auto">
-                <Nav.Link className="ml-auto" href="#">Logout</Nav.Link>
+                <Nav.Link className="ml-auto" onClick = {Logout}>Logout</Nav.Link>
               </NavItem>
             </Nav>
           </Navbar.Collapse>
@@ -289,8 +289,8 @@ class Group extends Component {
               <div class="col-md-4">
                 <img src={group_placeholder}/>
                 <div class="col-md-12">
-                  <input id="join_group" class="btn btn-info" type="button" value= {!this.state.joined ? "Join" : "Leave Group"} onClick={this.handleJoin}></input>
-                  <Button variant = {this.state.permissions ? "primary" : "outline-light"} disabled = {!this.state.permissions} onClick = {this.handleEditButton}> {this.state.editing ? 'Cancel Edit' : 'Edit' }</Button>
+                  <input id="join_group" class="btn btn-info" type="button" disabled = {this.state.permission || this.state.editing} value= {!this.state.joined ? "Join" : "Leave Group"} onClick={this.handleJoin}/>
+                  <Button variant = {this.state.permission ? "primary" : "outline-light"} disabled = {!this.state.permission} onClick = {this.handleEditButton}> {this.state.editing ? 'Cancel Edit' : 'Edit' }</Button>
                 </div>
               </div>
               <div class="col-md-4">
@@ -313,11 +313,10 @@ class Group extends Component {
           </div> 
           <div class="container">
             <div class="row group_row">
-              <div class="col-xs-6">
+              <div class="col-xs-6" style = {{width : "400px", "maxWidth" : '400px'}}>
                 <div class="row">
-                  <h3 class="py-4 mr-4" >Events</h3>
-                  {<a class="btn btn-primary ml-auto my-auto" onClick = {this.goToCreateEvent}>Create Event</a>
-                  }
+                  <h3 class="py-4">Events</h3>
+                  <a class="btn btn-primary ml-auto my-auto" onClick = {this.goToCreateEvent}>Create Event</a>
                 </div>
                 {Object.keys(this.state.eventList).slice(1,this.state.eventList.length).map((Key) =>
                   <div>

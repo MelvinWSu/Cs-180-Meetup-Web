@@ -32,9 +32,8 @@ export default class  GroupCard extends Component{
     console.log(self.state)
     var usersRef = fire.database().ref("groups/" + this.state.item);
         usersRef.once("value").then(function(snapshot) {
-        
           self.setState({
-              groupBio: snapshot.val().bio,
+              groupBio: snapshot.val().group_bio,
               groupName: snapshot.val().group_name,
               groupPhoto: snapshot.val().photo
           })
@@ -51,7 +50,6 @@ export default class  GroupCard extends Component{
         return(
         <Container>
         <Row>
-            
             <Col></Col>
             <Col>
             <Card border = "primary" text = "dark" variant = 'light'>
@@ -59,17 +57,11 @@ export default class  GroupCard extends Component{
             <Card.Img src={this.state.groupPhoto} style = {{height: '300px', width: '300px', "maxWidth" : '300px', "maxHeight": '300px'}}  />
             <Card.ImgOverlay>
             <Card.Body>
-              
-                
-                
                 <Card.Text className="justify-content-center" style={{width: '200px'}}>
                 <br/>
-                {this.state.groupBio}
-                
+                {this.state.groupBio}                
                 </Card.Text>
                 <Nav.Link onClick = {this.handleClick}>Go to Page</Nav.Link>  
-                        
-               
             </Card.Body>
             </Card.ImgOverlay>
             </Card>
