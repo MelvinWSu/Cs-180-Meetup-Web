@@ -255,7 +255,7 @@ class Mainpage extends Component {
                     <div>
                     <Row>
                     { this.state.results_option == "Group" ? <GroupCard item = {Key} /> :
-                                                      <EventCard index = {Key} content = {this.state.search_results[Key]} /> }
+                                                      <EventCard index = {Key} content = {this.state.search_results[Key]} searchMode = {true} /> }
                     </Row>
                     <br></br>
                     <br/>
