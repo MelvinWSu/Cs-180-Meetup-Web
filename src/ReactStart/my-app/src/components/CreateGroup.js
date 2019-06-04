@@ -48,7 +48,6 @@ class CreateGroup extends Component {
     var getGrouplist = fire.database().ref("users/" + self.state.leader + "/groups")
     getGrouplist.once("value").then(function (snapshot1) {
       var currGroupList = snapshot1.val()
-      alert(currGroupList)
       currGroupList.push(newGroup.key)
       getGrouplist.update(currGroupList)
     })
