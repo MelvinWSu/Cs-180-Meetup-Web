@@ -46,7 +46,7 @@ class Mainpage extends Component {
 
 
   componentDidMount(){
-
+    var self = this
     auth.onAuthStateChanged((user) => {
         
       if (user) {
@@ -61,6 +61,11 @@ class Mainpage extends Component {
 
         console.log("no one logged on")
       }
+      var ref = fire.database().ref("users");
+      ref.orderByChild("email").equalTo(self.state.currentUser.email).on("value", function(snapshot){
+        snapshot.forEach(function(data) {
+          self.setState({userKey: data.key})
+        })})
     });
 
     console.log("states: ")
@@ -198,6 +203,16 @@ class Mainpage extends Component {
     this.setState({search_option : "Event"})
   }
 
+  changeProfileLinking(props) {
+  
+    var temp = "/profile/user/" + props.userKey;
+    return (
+      <NavItem className="ml-auto">
+        <Nav.Link id="profile_linking" href={temp}>Profile</Nav.Link>
+      </NavItem>
+    )
+  }
+
   render(){
     return (
       <header>
@@ -208,12 +223,9 @@ class Mainpage extends Component {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse>
             <Nav className="ml-auto">
-              <NavItem className="ml-auto">
-                <Nav.Link href="./account">Account</Nav.Link>
-              </NavItem>
-              <NavItem className="ml-auto">
-                  <Nav.Link onClick = {this.handleProfileButtonClick}>Profile</Nav.Link>
-                </NavItem>
+              <this.changeProfileLinking
+                userKey = {this.state.userKey}
+              />
               <NavItem className="ml-auto">
                 <Nav.Link className="ml-auto" href="./createGroup" >Create Group</Nav.Link>
               </NavItem>
