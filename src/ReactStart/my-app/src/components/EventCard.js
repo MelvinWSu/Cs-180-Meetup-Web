@@ -179,11 +179,11 @@ export default class EventCard extends Component {
     render(){
         return(
             <div>
-            <Card style = {{width : "400px", "maxWidth" : '400px'}}>
+            <Card className="border-primary" style = {{width : "400px", "maxWidth" : '400px'}}>
                 <div class = "row">
                     <div class = "col"></div>
                     <div class = "col-6">
-                <Card.Title class = "mt-2 font-weight-bold"> {this.state.content['event_name']}</Card.Title>
+                        <Card.Title class="mt-2 font-weight-bold event_under"> {this.state.content['event_name']}</Card.Title>
                     </div>
                     <div class = "col">
                         {this.state.permission ? <button class = "mx-1" type = "button" class= "close" aria-label= "Close" onClick = {this.handleDelete}>
@@ -192,10 +192,12 @@ export default class EventCard extends Component {
                     </div>
                 </div>
                 <Card.Body>
-                    {this.state.content.time}
+                    {this.state.content.time} @ {this.state.content.loc}
                     <br/>
                     <br></br>
-                    
+                    <strong>Description:</strong> {this.state.content.desc}
+                    <br />
+                    <br></br>
                     <Row>
                         <Col></Col>
                         <Col>Attendees: {this.state.currentMemberList.length-1} </Col>
@@ -215,7 +217,7 @@ export default class EventCard extends Component {
                     <Col></Col>
                     </Row>
                 </Card.Body>
-                <Card.Footer>
+                <Card.Footer className="border-primary">
                     <Col>
                     <Button onClick = {this.handleJoin}>{!this.state.joined ? "+RSVP" : "-Leave" }</Button>
                     </Col>

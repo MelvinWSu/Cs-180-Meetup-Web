@@ -5,6 +5,7 @@ import { Nav, Navbar, NavItem } from 'react-bootstrap';
 import { Image } from 'react-bootstrap';
 import img_placeholder from './pics/img_placeholder.png';
 import group_placeholder from './pics/group_placeholder.png';
+import logo from './pics/logo.png';
 import fire, {auth} from '../fire';
 import Logout from './Logout';
 import forwardToProfile from './forwardToProfile'
@@ -92,7 +93,9 @@ class CreateGroup extends Component {
     return (
       <header>
         <Navbar bg="light" expand="ex-lg">
-          <Navbar.Brand href="./main">Meetup</Navbar.Brand>
+          <Navbar.Brand className="nav_font" href="/main">
+            <img className="nav_logo" src={logo}></img>eetup
+          </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse>
             <Nav className="ml-auto">
@@ -112,14 +115,14 @@ class CreateGroup extends Component {
           <div className="container h-100">
             <div className="row align-items-center h-100">
               <div className="col-md-6 mx-auto">
-                <div className="card creategroup_card">
+                <div className="card border-primary creategroup_card">
                   <div className="card-body mx-3">
                     <form>
                       <div className="form-group p-3 text-center">
                         <h4>Create a New Group</h4>
                       </div>
                       <div className="form-group text-center">
-                        <a href="#"><img src={img_placeholder} /></a>
+                        <a href="#"><img src={group_placeholder} /></a>
                       </div>
                       <div className="form-group">
                         <a>Group Name</a>

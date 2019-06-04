@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Route} from 'react-router-dom';
 import { Redirect } from 'react-router-dom';
 import Logout from './Logout';
 import forwardToProfile from './forwardToProfile';
+import logo from './pics/logo.png';
 
 let profile = {
       f_name: '',
@@ -110,8 +111,10 @@ class Signup extends Component{
   render(){
     return (
       <header>
-        <Navbar bg="light" expand="md">
-          <Navbar.Brand href="./main">Meetup</Navbar.Brand>
+        <Navbar bg="light" expand="md" fixed="top">
+          <Navbar.Brand className="nav_font" href="./">
+            <img className="nav_logo" src={logo}></img>eetup
+          </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="navbarCollapse">
             <Nav className="ml-auto">
@@ -127,7 +130,7 @@ class Signup extends Component{
         <div className="container h-100">
           <div className="row align-items-center h-100">
             <div className="col-md-6 mx-auto">
-              <div className="card signup_card">
+              <div className="card border-primary signup_card">
                 <div className="card-body mx-3">
                   
                     <div className="form-group p-3 text-center">
@@ -160,7 +163,7 @@ class Signup extends Component{
                       </div>
                     </div>
                     <Button onClick={this.Signup_control}>
-                    CreateAccount
+                    Create Account
                     </Button>
                 </div>
               </div>

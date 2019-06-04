@@ -5,6 +5,7 @@ import { Nav, Navbar, NavItem } from 'react-bootstrap';
 import { Image } from 'react-bootstrap';
 import img_placeholder from './pics/img_placeholder.png';
 import group_placeholder from './pics/group_placeholder.png';
+import logo from './pics/logo.png';
 import fire, {auth} from '../fire';
 import { tsPropertySignature } from '@babel/types';
 import forwardToProfile from './forwardToProfile'
@@ -41,15 +42,15 @@ function CreateEvent(props) {
   return (
     <header>
       <Navbar bg="light" expand="ex-lg">
-        <Navbar.Brand href="/main">Meetup</Navbar.Brand>
+        <Navbar.Brand className="nav_font" href="/main">
+          <img className="nav_logo" src={logo}></img>eetup
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse>
           <Nav className="ml-auto">
+            
             <NavItem className="ml-auto">
-              <Nav.Link href="./profile">Profile</Nav.Link>
-            </NavItem>
-            <NavItem className="ml-auto">
-              <Nav.Link className="ml-auto" href="./createGroup">Create Group</Nav.Link>
+              <Nav.Link className="ml-auto" href="../createGroup">Create Group</Nav.Link>
             </NavItem>
             <NavItem className="ml-auto">
               <Nav.Link className="ml-auto" onClick={Logout}>Logout</Nav.Link>
@@ -61,14 +62,11 @@ function CreateEvent(props) {
         <div class="container h-100">
           <div class="row align-items-center h-100">
             <div class="col-md-6 mx-auto">
-              <div class="card createevent_card">
+              <div class="card border-primary createevent_card">
                 <div class="card-body mx-3">
                   <form>
                     <div class="form-group p-3 text-center">
                       <h4>Create a New Event</h4>
-                    </div>
-                    <div class="form-group text-center">
-                      <a href="#"><img src={img_placeholder} /></a>
                     </div>
                     <div class="form-group">
                       <a>Event Name</a>

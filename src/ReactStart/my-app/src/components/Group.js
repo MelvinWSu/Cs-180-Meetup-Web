@@ -5,6 +5,7 @@ import { Nav, Form, Navbar, NavItem } from 'react-bootstrap';
 import { Carousel, Row, Col } from 'react-bootstrap';
 import img_placeholder from './pics/img_placeholder.png';
 import group_placeholder from './pics/group_placeholder.png';
+import logo from './pics/logo.png';
 import fire, {auth} from '../fire';
 import EventCard from './EventCard';
 import Logout from './Logout';
@@ -292,7 +293,8 @@ class Group extends Component {
   handleViewRender(props){
     return (
       <div class="col-xs-4">
-        <h3>{props.group_name}</h3>
+        <h1 className="group_name">{props.group_name}</h1><br />
+        <h3> About </h3>
         <p>{props.group_bio}</p>
       </div>
     )
@@ -320,7 +322,9 @@ class Group extends Component {
     return (
       <header>
         <Navbar bg="light" expand="ex-lg">
-          <Navbar.Brand href="/main">Meetup</Navbar.Brand>
+          <Navbar.Brand className="nav_font" href="/main">
+            <img className="nav_logo" src={logo}></img>eetup
+          </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse>
             <Nav className="ml-auto">
@@ -336,7 +340,7 @@ class Group extends Component {
             </Nav>
           </Navbar.Collapse>
         </Navbar>
-        <main>
+        <main className="new_font">
           <div class = "row justify-content-md-center">
           <div class="container">
             <div class="row group_row">
@@ -377,7 +381,7 @@ class Group extends Component {
               <div class="col-xs-6" style = {{width : "400px", "maxWidth" : '400px'}}>
                 <div class="row">
                   <h3 class="py-4">Events</h3>
-                  <a class="btn btn-primary m-4" onClick = {this.goToCreateEvent}>Create Event</a>
+                  <Button className="btn btn-info m-4" onClick = {this.goToCreateEvent}>Create Event</Button>
                 </div>
                 <Row>
                   
@@ -394,14 +398,14 @@ class Group extends Component {
               </div>
               <div class="col-xs-4 offset-md-1">
                 <h3 class="py-4">Members</h3>
-                <div class="card member_card">
+                <div class="card member_card border-primary">
                   <div class="card-body">
                     <h5 class="card-title">Organizer</h5>
                     {console.log("organizer" + this.state.organizer)}
                     {this.state.organizer ? <PeopleCard userKey = {this.state.organizer} /> : null }
                   </div>
                 </div>
-                <div class="card member_card">
+                  <div class="card member_card border-primary">
                   <div class="card-body">
                     <h5 class="card-title">Members</h5>
                     {console.log("PRINT MEMBERS LIST")}
@@ -427,7 +431,7 @@ class Group extends Component {
             </div>
             <div class="row">
             <div class = "col-sm-12">
-              <div class= "card">
+                  <div class= "card border-primary">
                 <div class = "card-body text-left scroll">
                   {displayList()} 
                   <div class="form-group">

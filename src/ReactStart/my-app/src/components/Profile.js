@@ -5,6 +5,7 @@ import { Nav, Navbar, NavItem } from 'react-bootstrap';
 import { Image, Form, Container, Row, Col} from 'react-bootstrap';
 import img_placeholder from './pics/img_placeholder.png';
 import group_placeholder from './pics/group_placeholder.png';
+import logo from './pics/logo.png';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import fire, {auth} from '../fire';
 import Logout from './Logout';
@@ -24,6 +25,8 @@ class Profile extends Component{
           picture: null,
           uniqueLink: "loading...",
           email: "https://www.tacobell.com/",
+          dob: "loading...",
+          city: "loading...",
           groups : [],
 
           currentUser: null,
@@ -86,6 +89,8 @@ class Profile extends Component{
           bio: snapshot.val().bio,
           uniqueLink: snapshot.val().photo,
           email: snapshot.val().email,
+          dob: snapshot.val().dob,
+          city: snapshot.val().city,
           groups: snapshot.val().groups
         })
     
@@ -155,11 +160,8 @@ class Profile extends Component{
     var the_first_name = document.getElementById("profile_firstname").value;
     var the_last_name = document.getElementById("profile_lastname").value;
     var the_bio = document.getElementById("profile_bio").value;
-    var the_pic = document.getElementById("profile_pic").value;
-
-    console.log("the pic")
-    console.log(the_pic)
-    
+    var the_dob = document.getElementById("profile_dob").value;
+    var the_city = document.getElementById("profile_city").value;
     
     //update info on database
     var getKey = window.location.pathname.split('/user/')[1]
@@ -168,18 +170,19 @@ class Profile extends Component{
     
     var reference = "Profile_Image"
     var key = getKey
-    var file = the_pic
+    //var file = the_pic
 
     //UploadFile(reference, key, file)
 
     console.log("the file:")
-    console.log(file)
+    //console.log(file)
     
     fire.database().ref("users/" + getKey).update({
       f_name: the_first_name,
       l_name: the_last_name,
       bio: the_bio,
-      //photo: the_pic
+      dob: the_dob,
+      city: the_city
       });
     this.handleUpload()
     
@@ -188,7 +191,8 @@ class Profile extends Component{
       first_name: the_first_name,
       last_name: the_last_name,
       bio: the_bio,
-      //photo: the_pic,
+      dob: the_dob,
+      city: the_city,
       editing : false
     })
 
@@ -206,7 +210,7 @@ class Profile extends Component{
           <div class="container mt-4 py-4">
             <div class="row">
               <div class="col-md-4 px-4">
-              <img src={props.uniqueLink || "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG/220px-Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG"} height = "300" width = "300" id="profile_img" style = {{"border-radius" : "50%"}}/>   
+              <img src={props.uniqueLink || img_placeholder} height = "300" width = "300" id="profile_img" style = {{"border-radius" : "50%"}}/>   
                 <div class="card border-0">
 
                   <div class="card-head">
@@ -230,18 +234,25 @@ class Profile extends Component{
                 <div class="row py-2">
                   <label class="pr-2"><strong>First Name:</strong></label>
                   <div className="form-group">
-                      <input id = "profile_firstname" type="text" defaultValue = {props.first_name} placeholder="First Name" name="e_mail" required/>
+                    <input id = "profile_firstname" type="text" defaultValue = {props.first_name} placeholder="First Name" name="e_mail" required/>
                   </div>
                 </div>
                 <div class="row py-2">
                   <label class="pr-2"><strong>Last Name:</strong></label>
-                    <input id = "profile_lastname" type="text"  defaultValue = {props.last_name} placeholder="Last Name" required/>
+                  <input id = "profile_lastname" type="text"  defaultValue = {props.last_name} placeholder="Last Name" required/>
                 </div>
                 <div class="row py-2">
                   <label class="pr-2"><strong>E-mail:</strong></label>
                   {props.email}
                 </div>
-              
+                <div class="row py-2">
+                  <label class="pr-2"><strong>Born:</strong></label>
+                  <input id="profile_dob" type="text" defaultValue={props.dob} placeholder="Date of Birth" required />
+                </div>
+                <div class="row py-2">
+                  <label class="pr-2"><strong>Hometown:</strong></label>
+                  <input id="profile_city" type="text" defaultValue={props.city} placeholder="City" required />
+                </div>
               </div>
             </div>
           </div>
@@ -258,9 +269,9 @@ class Profile extends Component{
       
       <div>
           <div class="container mt-4 py-4">
-            <div class="row">
-              <div class="col-md-4 px-4">
-              <img src={props.uniqueLink || "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG/220px-Batian_Nelion_and_pt_Slade_in_the_foreground_Mt_Kenya.JPG"} height = "300" width = "300" id="profile_img" style = {{"border-radius" : "50%"}} />   
+          <div class="row">
+            <div class="col-md-4 px-4">
+              <img src={props.uniqueLink || img_placeholder} height = "300" width = "300" id="profile_img" style = {{"border-radius" : "50%"}} />   
                                     
                 <div class="card border-0">
                   <div class="card-head">
@@ -281,18 +292,26 @@ class Profile extends Component{
                   <label class="pr-2"><strong>E-mail:</strong></label>
                   {props.email}
                 </div>
-              
+                <div class="row py-2">
+                  <label class="pr-2"><strong>Born:</strong></label>
+                  {props.dob}
+                </div>
+                <div class="row py-2">
+                  <label class="pr-2"><strong>Hometown:</strong></label>
+                  {props.city}
+                </div>
               </div>
             </div>
           </div>
           <div class="container mt-4 py-4">
             <p class="py-2 profile_text"><strong>About Me:</strong></p>
-            <pre>
+            <p>
               {props.bio}
-            </pre>
+            </p>
           </div>
-          
-          
+          <div class="container mt-4 py-4">
+            <p class="py-2 profile_text"><strong>My Groups:</strong></p>
+          </div>          
         </div>
     );
   }
@@ -302,7 +321,9 @@ class Profile extends Component{
     return(
       <Router>
          <Navbar bg="light" expand="ex-lg">
-          <Navbar.Brand href="/main">Meetup</Navbar.Brand>
+          <Navbar.Brand className="nav_font" href="/main">
+            <img className="nav_logo" src={logo}></img>eetup
+          </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse>
             <Nav className="ml-auto">
@@ -317,13 +338,15 @@ class Profile extends Component{
           </Navbar.Collapse>
         </Navbar>
         {/*<GroupCard item = {"-LeAefNx9g_SchTVOyXk"} key = {"-LeAefNx9g_SchTVOyXk"}/> */}
-      <header>
+      <header className="new_font">
         <Button variant = {this.state.permissions ? "primary" : "outline-light"} disabled = {!this.state.permissions} onClick = {this.handleEditButton}> {this.state.editing ? 'Cancel Edit' : 'Edit' }</Button>
         {this.state.editing ?  
                               <this.handleEditRender  first_name = {this.state.first_name}
                                                       last_name = {this.state.last_name}
                                                       email = {this.state.email}
                                                       bio = {this.state.bio}
+                                                      dob = {this.state.dob}
+                                                      city = {this.state.city}
                                                       submit = {this.handleEditSubmit}
                                                       change = {this.handleChange}
                                                       uniqueLink = {this.state.uniqueLink}/>
@@ -332,6 +355,8 @@ class Profile extends Component{
                                 last_name = {this.state.last_name}
                                 email = {this.state.email}
                                 bio = {this.state.bio}
+                                dob={this.state.dob}
+                                city={this.state.city}
                                 uniqueLink={this.state.uniqueLink}
                                   />}
         
@@ -341,7 +366,7 @@ class Profile extends Component{
       <Row>
       <Col></Col>
       <Col>
-      <Carousel style = {{"background-color" : "white"}}>
+            <Carousel style = {{"background-color" : "white"}}>
   
         {this.state.groups.slice(1,this.state.groups.length).map((item,key) =>
           
@@ -351,7 +376,7 @@ class Profile extends Component{
       )}
       </Carousel>
       </Col>
-      <Col></Col>
+          <Col></Col>
       </Row>
       
 

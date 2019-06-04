@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Kanit|Sigmar+One|Ultra&display=swap');
+
 body, html {
     height: 100%;
     width: 100%;
@@ -11,20 +13,39 @@ body, html {
     height: 100vh;
 }
 
+.new_font {
+    font-family: Kanit;
+}
+
 .landing_text {
+    font-family: Verdana;
     position: absolute;
-    top: 50%;
+    top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
 }
 
+.nav_logo {
+    width: 50px;
+}
+
+.nav_font {
+    font-family: 'Ultra';
+    color: gray !important;
+}
+
 .signup_card {
-    border-width: 2px;
+    background-color: whitesmoke !important;
+    border-width: 2px !important;
     max-width: 400px;
     display: flex;
     flex-direction: column;
     transform: translate(0, 50%);
+}
+
+.form-control {
+    border-color: turquoise !important;
 }
 
 .jumbotron {
@@ -63,11 +84,39 @@ body, html {
 }
 
 .creategroup_card {
-    border-width: 2px;
+    background-color: whitesmoke !important;
+    border-width: 2px !important;
     max-width: 400px;
     display: flex;
     flex-direction: column;
     transform: translate(0, 15%);
+}
+
+.createevent_card {
+    background-color: whitesmoke !important;
+    border-width: 2px !important;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    transform: translate(0, 15%);
+}
+
+.border-primary {
+    background-color: whitesmoke !important;
+}
+
+.groupcard_link {
+    text-shadow: 1px 1px black;
+    font-size: 20px;
+}
+
+.event_under {
+    text-decoration: underline;
+    text-decoration-style: double;
+}
+
+.group_name {
+    font-family: 'Sigmar One'
 }
 
 .group_row {

@@ -52,8 +52,8 @@ export default class  GroupCard extends Component{
             <Row>
             <Col></Col>
             <Col>
-            <Card text = "dark" variant = 'light' style = {{width: '300px'}}>
-            <Card.Header>{this.state.groupName}</Card.Header>
+            <Card className="border-primary" text="dark" variant='light' style={{ width: '300px'}}>
+            <Card.Header className="border-primary"><strong>{this.state.groupName}</strong></Card.Header>
             <Card.Img src={this.state.groupPhoto} style = {{height: '300px', width: '300px', "maxWidth" : '300px', "maxHeight": '300px', opacity: '0.5'}}  />
             <Card.ImgOverlay>
             <Card.Body>
@@ -61,11 +61,11 @@ export default class  GroupCard extends Component{
                 <Col>
                 <Card.Text>
                 <br/>
-                {this.state.groupBio}                
+                <strong>{this.state.groupBio}</strong>               
                 </Card.Text>
                 </Col>
                 <Col></Col>
-                <Nav.Link onClick = {this.handleClick}>Go to Page</Nav.Link>  
+                <Nav.Link className="groupcard_link" onClick={this.handleClick}><strong>Go to Page</strong></Nav.Link>  
             </Card.Body>
             </Card.ImgOverlay>
             </Card>

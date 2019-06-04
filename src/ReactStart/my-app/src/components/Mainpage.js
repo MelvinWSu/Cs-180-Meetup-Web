@@ -8,6 +8,7 @@ import Logout from './Logout';
 import forwardToProfile from './forwardToProfile'
 import GroupCard from './GroupCard'
 import EventCard from './EventCard'
+import logo from './pics/logo.png'
 
 class Mainpage extends Component { 
   constructor(){
@@ -201,7 +202,9 @@ class Mainpage extends Component {
     return (
       <header>
         <Navbar bg="light" expand="ex-lg">
-          <Navbar.Brand href="./main">Meetup</Navbar.Brand>
+          <Navbar.Brand className="nav_font" href="/main">
+            <img className="nav_logo" src={logo}></img>eetup
+          </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse>
             <Nav className="ml-auto">
@@ -212,7 +215,7 @@ class Mainpage extends Component {
                   <Nav.Link onClick = {this.handleProfileButtonClick}>Profile</Nav.Link>
                 </NavItem>
               <NavItem className="ml-auto">
-                <Nav.Link className="ml-auto" href="./CreateGroup" >Create Group</Nav.Link>
+                <Nav.Link className="ml-auto" href="./createGroup" >Create Group</Nav.Link>
               </NavItem>
               <NavItem className="ml-auto">
                 <Nav.Link className="ml-auto" onClick = {Logout}>Logout</Nav.Link>
@@ -220,11 +223,11 @@ class Mainpage extends Component {
             </Nav>
           </Navbar.Collapse>
         </Navbar>
-        <main>
+        <main className="new_font">
           <div className="jumbotron jumbotron-fluid">
             <div className="container">
               <h1 className="display-4 text-center text-light">Find your group or event</h1>
-              <p className="lead text-center text-light">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+              <p className="lead text-center text-light">Search for your group or event and look to join a new group or reserve an event.</p>
             </div>
           </div>
           <div className="container">
