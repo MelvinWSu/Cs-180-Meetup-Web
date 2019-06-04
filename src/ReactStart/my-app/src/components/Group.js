@@ -353,7 +353,6 @@ class Group extends Component {
                   <Button variant = "primary" disabled = {!this.state.permission} onClick = {this.handleEditButton}>{this.state.editing ? 'Cancel Edit' : 'Edit' }</Button>
                   }
                 </div>
-                {this.state.permission ? <this.createDeleteGroup/> : <div/>}
               </div>
               <div class="col-md-4">
                 {this.state.editing ? 
