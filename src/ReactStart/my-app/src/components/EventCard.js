@@ -21,7 +21,8 @@ export default class EventCard extends Component {
 
 
             currentMemberList : [],
-            editing : this.props.editing
+            editing : this.props.editing,
+            searchMode : this.props.searchMode
         }
 
         console.log("start states")
@@ -132,7 +133,6 @@ export default class EventCard extends Component {
             }
             else{
                 alert("Must be in the group to join event")
-                window.location.href = "/group/" + this.state.content["group"]
             }
         }
         else{
@@ -218,9 +218,22 @@ export default class EventCard extends Component {
                     </Row>
                 </Card.Body>
                 <Card.Footer className="border-primary">
+                    {this.state.searchMode ? 
+                    <Row>
                     <Col>
                     <Button onClick = {this.handleJoin}>{!this.state.joined ? "+RSVP" : "-Leave" }</Button>
                     </Col>
+                    <Col>
+                    <Button href = {"group/" + this.state.content["group"]}>Group Page</Button>
+                    </Col>
+                    </Row>
+                        
+                    :
+
+                    <Col>
+                    <Button onClick = {this.handleJoin}>{!this.state.joined ? "+RSVP" : "-Leave" }</Button>
+                    </Col>
+                    }
                 </Card.Footer>
             </Card>
             </div>
