@@ -20,14 +20,14 @@ let event_details = {
   group: ''
 }
 
-function addEvent() {
+async function addEvent() {
   event_details.event_name = document.getElementById("createevent_name").value;
   event_details.time = document.getElementById("createevent_time").value;
   event_details.loc = document.getElementById("createevent_loc").value;
   event_details.desc = document.getElementById("createevent_desc").value;
-  
   var groupKey = window.location.pathname.split('/createEvent/')[1]
   event_details.group = groupKey
+  await console.log()
   fire.database().ref("groups/" + groupKey + "/event_list").push().set(event_details);
   var event_num = fire.database().ref();
   event_num.once("value", function(snapshot) {
